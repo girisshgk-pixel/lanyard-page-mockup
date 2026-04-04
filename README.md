@@ -24,8 +24,8 @@ targeting all product pages listed under `/products/lanyards`.
 The work covers page layout, image gallery UX, structured data, on-page SEO, mobile-first responsiveness,
 and a full developer notes document that justifies every proposed change with before/after code diffs.
 
-**Prepared by:** Girish Kumar — E-Commerce SEO Manager, AdsPilot
-**Client:** Badge-A-Minit (badge-a-minit.com.au)
+**Prepared by:** Girish Kumar — E-Commerce SEO Manager
+**Brand:** Badge-A-Minit (badge-a-minit.com.au)
 **Date:** April 2026
 **Scope:** `/products/lanyards` — product pages only
 
