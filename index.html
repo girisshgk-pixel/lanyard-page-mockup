@@ -677,6 +677,24 @@ body {
 .logo-sub { font-size: 10px; color: var(--text-muted); display: block; }
 .header-contact { font-size: 13px; color: var(--text-muted); text-align: right; }
 .header-contact strong { display: block; color: var(--green-dark); font-size: 15px; }
+.dev-note-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green-mid);
+  text-decoration: none;
+  letter-spacing: 0.2px;
+  border-bottom: 1px dashed var(--green-border);
+  padding-bottom: 1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.dev-note-link:hover {
+  color: var(--green-dark);
+  border-color: var(--green-mid);
+}
 .header-nav { display: flex; gap: 6px; }
 .nav-btn {
   background: none; border: 1px solid var(--border); border-radius: 6px;
@@ -1296,21 +1314,241 @@ body {
 }
 .page-footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
 
-/* MOBILE */
-@media (max-width: 900px) {
+/* ══════════════════════════════════════════
+   MOBILE STICKY ORDER BAR
+   — hidden on desktop, fixed bottom on mobile
+══════════════════════════════════════════ */
+.mobile-sticky-bar {
+  display: none; /* desktop: hidden */
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  background: var(--white);
+  border-top: 2px solid var(--green-border);
+  box-shadow: 0 -4px 24px rgba(26,77,12,0.14);
+  padding: 10px 14px 10px;
+  /* safe area for iPhone home indicator */
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+}
+.msb-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.msb-img {
+  width: 46px; height: 46px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--bg-alt);
+}
+.msb-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.msb-name {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.msb-meta {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.msb-price {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--green-mid);
+  flex-shrink: 0;
+  text-align: right;
+  line-height: 1.2;
+}
+.msb-price-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 400;
+  display: block;
+}
+.msb-btn {
+  background: var(--green-mid);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.1s;
+  letter-spacing: 0.2px;
+  -webkit-tap-highlight-color: transparent;
+}
+.msb-btn:active { background: var(--green-dark); transform: scale(0.97); }
+
+/* ══════════════════════════════════════════
+   MOBILE-FIRST RESPONSIVE BREAKPOINTS
+══════════════════════════════════════════ */
+
+/* ── SMALL MOBILE: 0–479px ── */
+@media (max-width: 479px) {
+  .topbar { padding: 7px 14px; flex-direction: column; gap: 4px; text-align: center; }
+  .topbar-trust { justify-content: center; flex-wrap: wrap; gap: 8px; }
+  .site-header { padding: 10px 14px; }
+  .logo-text { font-size: 15px; }
+  .logo-sub { display: none; }
+  .header-nav { display: none; } /* collapsed on tiny screens */
+  .header-contact { font-size: 11px; }
+  .header-contact strong { font-size: 13px; }
+  .dev-note-link { font-size: 10px; }
+  .breadcrumb { padding: 8px 14px; font-size: 11px; }
+
+  /* Product layout: single column, panel on top */
   .product-layout { grid-template-columns: 1fr; }
-  .sticky-panel { position: static; height: auto; }
-  .image-viewer { flex-direction: column-reverse; }
-  .thumb-strip { flex-direction: row; overflow-x: auto; }
-  .thumb { flex-shrink: 0; }
-  .features-grid, .testi-grid, .why-grid { grid-template-columns: 1fr; }
+  .sticky-panel {
+    position: static; height: auto;
+    padding: 16px 14px 20px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .product-main-title { font-size: 18px; }
+
+  /* Image viewer: thumbs below main on tiny screens */
+  .image-viewer { flex-direction: column; gap: 8px; }
+  .thumb-strip { flex-direction: row; overflow-x: auto; gap: 6px; padding-bottom: 4px; }
+  .thumb { width: 54px; height: 54px; flex-shrink: 0; }
+  .product-image-main { width: 100%; max-width: 340px; margin: 0 auto; }
+
+  .colour-swatches { gap: 6px; }
+  .swatch { width: 26px; height: 26px; }
+  .size-grid { grid-template-columns: repeat(2, 1fr); }
+  .side-toggle { grid-template-columns: 1fr 1fr; }
+
+  .price-main { font-size: 24px; }
+  .calc-result-bar { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .crb-val { font-size: 18px; }
+
+  /* Content sections */
+  .content-section { padding: 28px 14px; }
+  .section-h2 { font-size: 20px; }
+  .section-intro { font-size: 14px; margin-bottom: 20px; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .stat-num { font-size: 22px; }
+  .features-grid { grid-template-columns: 1fr; gap: 12px; }
+  .steps { grid-template-columns: 1fr; gap: 12px; }
+  .steps .step::after { display: none; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .why-grid { grid-template-columns: 1fr; gap: 12px; }
+  .related-grid { grid-template-columns: 1fr; gap: 12px; }
+  .brands-strip { gap: 8px; }
+  .brand-logo { width: 60px; height: 60px; }
+  .calc-options { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .price-table-wrap { font-size: 11px; }
+  .price-table th, .price-table td { padding: 7px 8px; font-size: 11px; }
+  .final-cta { padding: 36px 14px; }
+  .final-cta h2 { font-size: 22px; }
+  .cta-btn-row { flex-direction: column; align-items: center; }
+  .page-footer { padding: 14px; flex-direction: column; text-align: center; }
+
+  /* Mobile sticky bar: show */
+  .mobile-sticky-bar { display: block; }
+  /* Add padding so footer content not hidden behind bar */
+  .page-footer { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+}
+
+/* ── MOBILE: 480–767px ── */
+@media (min-width: 480px) and (max-width: 767px) {
+  .topbar { padding: 7px 20px; }
+  .site-header { padding: 12px 20px; }
+  .logo-sub { display: none; }
+  .header-nav .nav-btn:not(.primary) { display: none; } /* show only Order Now */
+  .breadcrumb { padding: 10px 20px; font-size: 12px; }
+
+  .product-layout { grid-template-columns: 1fr; }
+  .sticky-panel {
+    position: static; height: auto;
+    padding: 20px 20px 24px;
+    border-right: none; border-bottom: 1px solid var(--border);
+  }
+  .product-main-title { font-size: 20px; }
+  .image-viewer { flex-direction: row; gap: 10px; }
+  .thumb-strip { flex-direction: column; }
+  .thumb { width: 60px; height: 60px; }
+  .size-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .content-section { padding: 36px 20px; }
+  .section-h2 { font-size: 22px; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .features-grid { grid-template-columns: 1fr; }
   .steps { grid-template-columns: repeat(2, 1fr); }
   .steps .step::after { display: none; }
-  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .testi-grid { grid-template-columns: 1fr; }
+  .why-grid { grid-template-columns: 1fr; }
   .related-grid { grid-template-columns: repeat(2, 1fr); }
-  .content-section { padding: 36px 24px; }
   .calc-options { grid-template-columns: repeat(2, 1fr); }
   .calc-result-bar { grid-template-columns: 1fr 1fr; }
+  .final-cta { padding: 44px 20px; }
+
+  .mobile-sticky-bar { display: block; }
+  .page-footer { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+}
+
+/* ── TABLET: 768–899px ── */
+@media (min-width: 768px) and (max-width: 899px) {
+  .site-header { padding: 12px 24px; }
+  .product-layout { grid-template-columns: 1fr; }
+  .sticky-panel {
+    position: static; height: auto;
+    padding: 24px;
+    border-right: none; border-bottom: 1px solid var(--border);
+  }
+  /* On tablet: 2-col mini layout for sticky panel internals */
+  .image-viewer { flex-direction: row; gap: 12px; }
+  .thumb-strip { flex-direction: column; }
+
+  .content-section { padding: 40px 28px; }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .steps { grid-template-columns: repeat(2, 1fr); }
+  .steps .step::after { display: none; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .why-grid { grid-template-columns: repeat(2, 1fr); }
+  .related-grid { grid-template-columns: repeat(2, 1fr); }
+  .calc-options { grid-template-columns: repeat(4, 1fr); }
+  .calc-result-bar { grid-template-columns: repeat(3, 1fr); }
+  .stats-bar { grid-template-columns: repeat(4, 1fr); }
+
+  /* No mobile bar on tablet — product is still visible on scroll */
+  .mobile-sticky-bar { display: none; }
+}
+
+/* ── SMALL DESKTOP: 900–1099px ── */
+@media (min-width: 900px) and (max-width: 1099px) {
+  .product-layout { grid-template-columns: 380px 1fr; }
+  .sticky-panel { padding: 20px 18px 36px; }
+  .product-main-title { font-size: 19px; }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .testi-grid { grid-template-columns: 1fr; }
+  .why-grid { grid-template-columns: repeat(2, 1fr); }
+  .related-grid { grid-template-columns: repeat(3, 1fr); }
+  .mobile-sticky-bar { display: none; }
+}
+
+/* ── DESKTOP: 1100px+ (base styles apply, nothing extra needed) ── */
+@media (min-width: 1100px) {
+  .mobile-sticky-bar { display: none; }
 }
 </style>
 </head>
@@ -1346,6 +1584,10 @@ body {
   <div class="header-contact">
     <strong>(08) 8363 1655</strong>
     Mon–Fri · 9am–5pm ACST
+    <a href="./dev-notes.html" class="dev-note-link" target="_blank" rel="noopener" aria-label="Open developer implementation notes in a new tab">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      Developer Implementation Notes
+    </a>
   </div>
 </header>
 
@@ -2294,6 +2536,102 @@ updateCalc();
   <button class="zoom-close" onclick="closeZoom()" aria-label="Close zoomed image">✕</button>
   <img id="zoomImg" src="" alt="" title="" style="pointer-events:none;">
 </div>
+
+<!-- ══════════════════════════════════════════
+     MOBILE STICKY ORDER BAR
+     — fixed bottom, shows on mobile/tablet only
+     — syncs live with sidebar calculator state
+══════════════════════════════════════════ -->
+<div class="mobile-sticky-bar" id="mobileStickyBar" role="complementary" aria-label="Quick order summary">
+  <div class="msb-inner">
+    <!-- Product thumbnail — updates when main image switches -->
+    <img
+      class="msb-img"
+      id="msbImg"
+      src="https://badge-a-minit.com.au/storage/product/image/polyester-lanyard-silk-screen-printing-8605.jpg"
+      alt="Polyester Lanyard (Silk Screen Printing) — thumbnail for quick order bar"
+      loading="lazy">
+
+    <!-- Product name + units/size selected -->
+    <div class="msb-info">
+      <div class="msb-name" id="msbName">Polyester Lanyard (Silk Screen Printing)</div>
+      <div class="msb-meta" id="msbMeta">Min. 50 units · 1cm · Single-Sided</div>
+    </div>
+
+    <!-- Live unit price -->
+    <div class="msb-price">
+      <span id="msbPrice">$2.44</span>
+      <span class="msb-price-sub">per unit</span>
+    </div>
+
+    <!-- Primary CTA -->
+    <button
+      class="msb-btn"
+      id="msbOrderBtn"
+      onclick="window.open('https://badge-a-minit.com.au/product/polyester-lanyard-silk-screen-printing','_blank')"
+      aria-label="Order Polyester Lanyard now — opens product order page">
+      Order Now
+    </button>
+  </div>
+</div>
+
+<script>
+/* ─── MOBILE STICKY BAR SYNC ───
+   Keeps the bar in sync with sidebar selections.
+   Runs after the main init, reads shared state vars.
+─────────────────────────────────── */
+function updateMobileStickyBar() {
+  /* Reuse existing state from sidebar: sbSize, sbSide, and sidebar qty */
+  const qty      = Math.max(50, parseInt(document.getElementById('sidebarQty').value) || 50);
+  const sideMap  = { s: 'Single-Sided', d: 'Double-Sided' };
+  const sizeLabel= sbSize + 'cm';
+  const sideLabel= sideMap[sbSide] || 'Single-Sided';
+  const price    = getPrice(qty, sbSize, sbSide);
+
+  /* Update meta line */
+  const meta = document.getElementById('msbMeta');
+  if (meta) meta.textContent =
+    qty.toLocaleString() + ' units · ' + sizeLabel + ' · ' + sideLabel;
+
+  /* Update price */
+  const priceEl = document.getElementById('msbPrice');
+  if (priceEl) priceEl.textContent = '$' + price.toFixed(2);
+
+  /* Sync image with main product image */
+  const mainImg = document.getElementById('mainImg');
+  const msbImg  = document.getElementById('msbImg');
+  if (mainImg && msbImg && mainImg.src) msbImg.src = mainImg.src;
+}
+
+/* Hook into existing update functions */
+const _origUpdateSidebarPrice = updateSidebarPrice;
+updateSidebarPrice = function() {
+  _origUpdateSidebarPrice();
+  updateMobileStickyBar();
+};
+
+/* Also patch selectSidebarSize and selectSidebarSide */
+const _origSelectSidebarSize = selectSidebarSize;
+selectSidebarSize = function(el) {
+  _origSelectSidebarSize(el);
+  updateMobileStickyBar();
+};
+
+/* Patch switchImg so bar image updates on thumb click */
+const _origSwitchImg = switchImg;
+switchImg = function(thumb, src, alt, title, shotLabel) {
+  _origSwitchImg(thumb, src, alt, title, shotLabel);
+  const msbImg = document.getElementById('msbImg');
+  if (msbImg && src) msbImg.src = src;
+};
+
+/* Initial sync after page load */
+document.addEventListener('DOMContentLoaded', function() {
+  updateMobileStickyBar();
+});
+/* Fallback in case DOMContentLoaded already fired */
+if (document.readyState !== 'loading') updateMobileStickyBar();
+</script>
 
 </body>
 </html>

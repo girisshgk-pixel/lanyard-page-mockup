@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Developer Notes — Lanyard Product Page Revamp | Badge-A-Minit</title>
+<style>
+/* ── BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green-dark: #1a4d0c;
+  --green-mid:  #2e8b22;
+  --green-pale: #eaf5df;
+  --green-border: #c5e5a8;
+  --amber:      #b45309;
+  --amber-pale: #fef3c7;
+  --amber-border:#fcd34d;
+  --red:        #b91c1c;
+  --red-pale:   #fee2e2;
+  --blue:       #1d4ed8;
+  --blue-pale:  #eff6ff;
+  --blue-border:#bfdbfe;
+  --text:       #1a2e0d;
+  --muted:      #4a6b3a;
+  --border:     #d6edc7;
+  --bg:         #f8fbf5;
+  --white:      #ffffff;
+  --code-bg:    #0d1117;
+  --code-text:  #e6edf3;
+  --mono: 'SF Mono','Fira Code','Cascadia Code','Consolas',monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* ── TOP HEADER ── */
+.doc-header {
+  background: var(--green-dark);
+  color: #fff;
+  padding: 28px 40px 24px;
+  border-bottom: 3px solid var(--green-mid);
+}
+.doc-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #fff;
+}
+.doc-header .meta {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.65);
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.doc-header .meta span::before { content: '● '; color: #a8f060; font-size: 10px; }
+.doc-header .scope-note {
+  margin-top: 14px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.6;
+}
+.doc-header .scope-note strong { color: #a8f060; }
+
+/* ── TOC ── */
+.toc-bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 40px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+}
+.toc-bar span { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-right: 4px; }
+.toc-link {
+  font-size: 12px;
+  color: var(--green-dark);
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.toc-link:hover { background: var(--green-pale); border-color: var(--green-border); }
+
+/* ── MAIN CONTENT ── */
+.content { max-width: 1400px; margin: 0 auto; padding: 32px 40px 80px; }
+
+/* ── CHANGE BLOCK ── */
+.change-block {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 36px;
+  background: var(--white);
+  box-shadow: 0 2px 12px rgba(26,77,12,0.06);
+}
+
+.change-notes {
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.change-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+}
+.tag-critical  { background: var(--red-pale);   color: var(--red);   border: 1px solid #fca5a5; }
+.tag-seo       { background: var(--green-pale);  color: var(--green-dark); border: 1px solid var(--green-border); }
+.tag-ux        { background: var(--blue-pale);   color: var(--blue);  border: 1px solid var(--blue-border); }
+.tag-schema    { background: #f3e8ff; color: #6b21a8; border: 1px solid #d8b4fe; }
+.tag-a11y      { background: #fff7ed; color: #9a3412; border: 1px solid #fdba74; }
+.tag-perf      { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
+
+.change-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--green-dark);
+  line-height: 1.3;
+}
+
+.change-desc {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.7;
+}
+
+.impact-box {
+  background: var(--green-pale);
+  border: 1px solid var(--green-border);
+  border-radius: 8px;
+  padding: 11px 13px;
+}
+.impact-box .impact-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--green-mid);
+  margin-bottom: 5px;
+}
+.impact-box ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.impact-box li {
+  font-size: 12px;
+  color: var(--green-dark);
+  padding-left: 14px;
+  position: relative;
+}
+.impact-box li::before { content: '↑'; position: absolute; left: 0; color: var(--green-mid); font-weight: 700; }
+
+.warning-box {
+  background: var(--amber-pale);
+  border: 1px solid var(--amber-border);
+  border-radius: 8px;
+  padding: 10px 13px;
+  font-size: 12px;
+  color: var(--amber);
+  line-height: 1.6;
+}
+.warning-box strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+
+.ref-links { display: flex; flex-direction: column; gap: 4px; }
+.ref-links a {
+  font-size: 11.5px;
+  color: var(--blue);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ref-links a::before { content: '↗'; font-size: 10px; }
+.ref-links a:hover { text-decoration: underline; }
+
+/* ── CODE PANELS ── */
+.code-panels {
+  display: flex;
+  flex-direction: column;
+}
+
+.code-panel {
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.code-panel:last-child { border-bottom: none; }
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  background: #f9fafb;
+}
+.panel-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.label-before { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.label-after  { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+.panel-file {
+  font-size: 11px;
+  color: #6b7280;
+  font-family: var(--mono);
+}
+.panel-dots { margin-left: auto; display: flex; gap: 5px; }
+.panel-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r { background: #f87171; }
+.dot-y { background: #fbbf24; }
+.dot-g { background: #4ade80; }
+
+pre {
+  margin: 0;
+  padding: 18px;
+  background: var(--code-bg);
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--code-text);
+  max-height: 480px;
+  overflow-y: auto;
+}
+pre::-webkit-scrollbar { width: 5px; height: 5px; }
+pre::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+/* Syntax highlight colours */
+.hl-key    { color: #79c0ff; }
+.hl-val    { color: #a5d6ff; }
+.hl-str    { color: #a8ff78; }
+.hl-com    { color: #8b949e; font-style: italic; }
+.hl-tag    { color: #7ee787; }
+.hl-attr   { color: #79c0ff; }
+.hl-url    { color: #ff9e64; }
+.hl-new    { background: rgba(168,255,120,0.10); display: block; border-left: 3px solid #4ade80; padding-left: 6px; margin-left: -6px; }
+.hl-del    { background: rgba(248,113,113,0.10); display: block; border-left: 3px solid #f87171; padding-left: 6px; margin-left: -6px; }
+
+/* ── SECTION HEADINGS ── */
+.section-head {
+  margin: 48px 0 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-head h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+.section-num {
+  width: 28px; height: 28px;
+  background: var(--green-mid);
+  color: white;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── MERCHANT LISTING SCOPE BOX ── */
+.scope-block {
+  background: var(--blue-pale);
+  border: 1px solid var(--blue-border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+.scope-block h3 { font-size: 14px; font-weight: 700; color: var(--blue); margin-bottom: 10px; }
+.scope-block p  { font-size: 13px; color: #1e3a8a; line-height: 1.7; margin-bottom: 8px; }
+.scope-block ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.scope-block li { font-size: 13px; color: #1e3a8a; padding-left: 16px; position: relative; }
+.scope-block li::before { content: '→'; position: absolute; left: 0; color: var(--blue); }
+.scope-block a  { color: var(--blue); font-weight: 500; }
+
+/* ── SUMMARY TABLE ── */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 36px;
+  font-size: 13px;
+  background: var(--white);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.summary-table th {
+  background: var(--green-dark);
+  color: white;
+  padding: 10px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+}
+.summary-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.summary-table tr:last-child td { border-bottom: none; }
+.summary-table tr:nth-child(even) td { background: #f9fef6; }
+.status-fixed  { color: var(--green-mid); font-weight: 700; }
+.status-warn   { color: var(--amber);     font-weight: 700; }
+.status-info   { color: var(--blue);      font-weight: 700; }
+
+/* ── FOOTER ── */
+.doc-footer {
+  background: var(--green-dark);
+  color: rgba(255,255,255,0.6);
+  padding: 20px 40px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ── RESPONSIVE: DEV NOTES PAGE ── */
+
+/* MOBILE: 0–599px */
+@media (max-width: 599px) {
+  .doc-header { padding: 16px 14px 14px; }
+  .doc-header h1 { font-size: 16px; }
+  .doc-header .meta { gap: 8px; flex-direction: column; }
+  .doc-header .scope-note { font-size: 11.5px; padding: 8px 12px; }
+  .toc-bar { padding: 8px 12px; gap: 4px; overflow-x: auto; flex-wrap: nowrap; }
+  .toc-link { font-size: 11px; padding: 4px 8px; flex-shrink: 0; }
+  .content { padding: 14px 12px 60px; }
+
+  /* Cards: single column */
+  .change-block {
+    grid-template-columns: 1fr;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  .change-notes {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 14px;
+  }
+  .change-title { font-size: 14px; }
+  .change-desc { font-size: 12.5px; }
+  .impact-box { padding: 9px 11px; }
+
+  /* Summary table: hide less critical cols on tiny screens */
+  .summary-table { font-size: 11.5px; }
+  .summary-table th, .summary-table td { padding: 7px 10px; }
+  .summary-table th:nth-child(4),
+  .summary-table td:nth-child(4) { display: none; } /* hide Google impact col */
+
+  pre { font-size: 10.5px; padding: 12px; max-height: 320px; }
+  .panel-header { padding: 8px 12px; gap: 6px; }
+  .panel-file { display: none; } /* too small to show on mobile */
+  .panel-dots { display: none; }
+
+  .section-head { margin: 28px 0 14px; }
+  .section-head h2 { font-size: 15px; }
+
+  .scope-block { padding: 14px 14px; }
+  .scope-block h3 { font-size: 13px; }
+  .scope-block li, .scope-block p { font-size: 12px; }
+
+  .doc-footer { padding: 14px; flex-direction: column; text-align: center; font-size: 11px; }
+}
+
+/* TABLET: 600–899px */
+@media (min-width: 600px) and (max-width: 899px) {
+  .doc-header { padding: 20px 20px 18px; }
+  .doc-header h1 { font-size: 18px; }
+  .toc-bar { padding: 10px 20px; overflow-x: auto; flex-wrap: nowrap; }
+  .toc-link { flex-shrink: 0; }
+  .content { padding: 20px 20px 60px; }
+
+  .change-block {
+    grid-template-columns: 1fr;
+    margin-bottom: 24px;
+  }
+  .change-notes {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 18px 18px;
+  }
+
+  pre { font-size: 11px; max-height: 360px; }
+  .summary-table { font-size: 12px; }
+  .doc-footer { padding: 16px 20px; }
+}
+
+/* SMALL DESKTOP: 900–1099px */
+@media (min-width: 900px) and (max-width: 1099px) {
+  .change-block { grid-template-columns: 280px 1fr; }
+  .content { padding: 28px 28px 60px; }
+  .toc-bar { padding: 12px 28px; }
+}
+
+/* LARGE DESKTOP: 1100px+ — base styles, nothing extra */
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<div class="doc-header">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:14px;">
+    <div>
+      <h1>Developer Notes — Lanyard Product Page Revamp</h1>
+      <div class="meta">
+        <span>Client: Badge-A-Minit (badge-a-minit.com.au)</span>
+        <span>Prepared by: Girish Kumar | E-Commerce SEO Manager</span>
+        <span>Date: April 2026</span>
+        <span>Status: Proposed — Pending Implementation</span>
+        <span>Page Type: WooCommerce / Custom PHP Product Page</span>
+      </div>
+    </div>
+    <a href="./index.html"
+       style="display:inline-flex;align-items:center;gap:6px;
+              background:rgba(255,255,255,0.12);
+              border:1.5px solid rgba(255,255,255,0.28);
+              color:white;text-decoration:none;
+              font-size:12px;font-weight:600;
+              padding:9px 16px;border-radius:8px;
+              white-space:nowrap;flex-shrink:0;
+              letter-spacing:0.2px;"
+       onmouseover="this.style.background='rgba(255,255,255,0.22)'"
+       onmouseout="this.style.background='rgba(255,255,255,0.12)'"
+       aria-label="Back to product page mockup">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to Product Page
+    </a>
+  </div>
+  <div class="scope-note">
+    <strong>Scope of Proposed Changes:</strong> All recommendations apply exclusively to product pages listed under
+    <strong>https://badge-a-minit.com.au/products/lanyards</strong>.
+    All changes listed are <strong>proposed recommendations</strong> — none have been implemented or pushed live.
+    This document is prepared to support developer handoff, stakeholder review, and QA planning
+    prior to any production deployment.
+    &nbsp;·&nbsp; Live staging preview:
+    <a href="https://girisshgk-pixel.github.io/lanyard-page-mockup/"
+       target="_blank" rel="noopener"
+       style="color:#a8f060;text-decoration:underline;text-underline-offset:2px;">
+      girisshgk-pixel.github.io/lanyard-page-mockup/
+    </a>
+  </div>
+</div>
+
+<!-- ── TOC ── -->
+<nav class="toc-bar" aria-label="Document sections">
+  <span>Jump to</span>
+  <a class="toc-link" href="#summary">Change Summary</a>
+  <a class="toc-link" href="#s1">Page Layout</a>
+  <a class="toc-link" href="#s2">Image Gallery</a>
+  <a class="toc-link" href="#s3">Alt & Title Text</a>
+  <a class="toc-link" href="#s4">Heading Hierarchy</a>
+  <a class="toc-link" href="#s5">Bulk Calculator</a>
+  <a class="toc-link" href="#s6">Structured Data</a>
+  <a class="toc-link" href="#s7">Meta & OG Tags</a>
+  <a class="toc-link" href="#s8">Robots & Canonical</a>
+  <a class="toc-link" href="#s9">Merchant Listings</a>
+  <a class="toc-link" href="#s10">FAQ Schema</a>
+  <a class="toc-link" href="#s11">Mobile-First</a>
+  <a class="toc-link" href="#s11">Mobile-First</a>
+  <a class="toc-link" href="#s12">Dev Notes Responsive</a>
+</nav>
+
+<div class="content">
+
+  <!-- ── CHANGE SUMMARY TABLE ── -->
+  <div id="summary" class="section-head" style="margin-top:20px;">
+    <div class="section-num">✦</div>
+    <h2>Change Summary — All Modifications at a Glance</h2>
+  </div>
+
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Change</th>
+        <th>Category</th>
+        <th>Google Rich Results Impact</th>
+        <th>Recommendation Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Sticky left panel + scrollable right content layout</td><td>UX / CRO</td><td>Reduced bounce rate → indirect ranking signal</td><td class="status-info">Proposed</td></tr>
+      <tr><td>2</td><td>1080×1080 product image with vertical thumbnail strip (6 shots)</td><td>UX / SEO</td><td>Image rich results eligibility; page experience signal</td><td class="status-info">Proposed</td></tr>
+      <tr><td>3</td><td>Programmatic alt text + title per image shot type</td><td>SEO / A11y</td><td>Google Image Search indexing; accessibility compliance</td><td class="status-info">Proposed</td></tr>
+      <tr><td>4</td><td>Colour swatch selector (8 colours)</td><td>UX / Schema</td><td>Product variant signalling; engagement improvement</td><td class="status-info">Proposed</td></tr>
+      <tr><td>5</td><td>H1→H2→H3 strict heading hierarchy</td><td>SEO / A11y</td><td>NLP entity clarity; featured snippet eligibility</td><td class="status-info">Proposed</td></tr>
+      <tr><td>6</td><td>FAQ questions wrapped in H3 + aria-expanded</td><td>SEO / A11y</td><td>FAQ rich result eligibility; ARIA accordion compliance</td><td class="status-info">Proposed</td></tr>
+      <tr><td>7</td><td>Live bulk price calculator with 750+ savings trigger</td><td>UX / CRO</td><td>Dwell time increase; conversion rate optimisation</td><td class="status-info">Proposed</td></tr>
+      <tr><td>8</td><td>BreadcrumbList structured data</td><td>Schema</td><td>Breadcrumb trail in SERPs</td><td class="status-info">Proposed</td></tr>
+      <tr><td>9</td><td>Product + Merchant Centre schema (shipping, returns)</td><td>Schema</td><td>Product rich results; Google Shopping eligibility</td><td class="status-info">Proposed</td></tr>
+      <tr><td>10</td><td>ItemList with image/description/brand on all 8 variants</td><td>Schema</td><td>Fixed critical Merchant Centre error; variant indexing</td><td class="status-info">Proposed</td></tr>
+      <tr><td>11</td><td>FAQPage structured data with itemprop markup</td><td>Schema</td><td>FAQ expandable rich results in SERPs</td><td class="status-info">Proposed</td></tr>
+      <tr><td>12</td><td>LocalBusiness schema with Maps URL + geo coordinates</td><td>Schema</td><td>Knowledge panel; Maps integration; trust signals</td><td class="status-info">Proposed</td></tr>
+      <tr><td>13</td><td>ImageGallery schema (6 ImageObject entries)</td><td>Schema</td><td>Image carousel rich results eligibility</td><td class="status-info">Proposed</td></tr>
+      <tr><td>14</td><td>Full OG + Twitter/X card meta tags</td><td>SEO</td><td>Social share previews; CTR from social referrals</td><td class="status-info">Proposed</td></tr>
+      <tr><td>15</td><td>Robots: noindex/nofollow + max-preview directives</td><td>SEO</td><td>Full snippet/image preview in SERPs even unindexed</td><td class="status-info">Proposed</td></tr>
+      <tr><td>16</td><td>Dynamic canonical URL (strips UTM/tracking params)</td><td>SEO</td><td>Prevents duplicate content from campaign traffic</td><td class="status-info">Proposed</td></tr>
+      <tr><td>17</td><td>Minimum order updated to 50 units (from 250)</td><td>Content</td><td>Accurate product data; Merchant Centre compliance</td><td class="status-info">Proposed</td></tr>
+      <tr><td>18</td><td>Merchant listing: shippingDetails from /shipping-options</td><td>Schema</td><td>Removes optional warning in Rich Results Test</td><td class="status-warn">Pending URL Access</td></tr>
+      <tr><td>19</td><td>Merchant listing: returnPolicy from /terms-and-conditions</td><td>Schema</td><td>Removes optional warning in Rich Results Test</td><td class="status-warn">Pending URL Access</td></tr>
+      <tr><td>20</td><td>4-tier mobile-first breakpoints (0–479 / 480–767 / 768–899 / 900+)</td><td>Mobile / SEO</td><td>Google Mobile-First Indexing parity; Core Web Vitals CLS</td><td class="status-fixed">Implemented</td></tr>
+      <tr><td>21</td><td>Mobile sticky order bar — image · name · units · price · Order Now</td><td>Mobile / CRO</td><td>Mobile conversion rate; CTA always visible on scroll</td><td class="status-fixed">Implemented</td></tr>
+      <tr><td>22</td><td>iOS safe-area-inset-bottom on sticky bar</td><td>Mobile</td><td>iPhone home indicator doesn't cover the CTA button</td><td class="status-fixed">Implemented</td></tr>
+      <tr><td>23</td><td>Dev notes page: 3-tier responsive layout</td><td>UX / Docs</td><td>Document readable on mobile during stakeholder review</td><td class="status-fixed">Implemented</td></tr>
+      <tr><td>20</td><td>5-breakpoint mobile-first CSS (0–479 / 480–767 / 768–899 / 900–1099 / 1100+)</td><td>Mobile-First</td><td>Google Mobile-First Index; Core Web Vitals page experience</td><td class="status-fixed">Implemented</td></tr>
+      <tr><td>21</td><td>Mobile sticky order bar — fixed bottom (image + name + qty + price + Order Now)</td><td>Mobile-First / CRO</td><td>Mobile CTA visibility; iOS safe-area inset compliance</td><td class="status-fixed">Implemented</td></tr>
+      <tr><td>22</td><td>Developer notes page (dev-notes.html) made fully responsive — 4 breakpoints</td><td>Dev Reference</td><td>Readable on phone/tablet for stakeholder and developer review</td><td class="status-fixed">Implemented</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 1: PAGE LAYOUT -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s1" class="section-head">
+    <div class="section-num">1</div>
+    <h2>Page Layout — Sticky Product Panel + Scrollable Content</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-ux">UX / CRO</div>
+      <div class="change-title">Single-column reading flow → Amazon-style sticky product panel</div>
+      <p class="change-desc">
+        The current page renders all product content in a single scrolling column. The product image, pricing, and order CTA scrolled out of view as users read content — creating a disconnect between purchase intent and the order action.<br><br>
+        The proposed design fixes the product image, title, pricing, size selector, and order CTA in a sticky left panel (<code>position: sticky; top: 65px</code>) that remains visible at all times while the right column scrolls through features, pricing tables, calculator, testimonials, and FAQ.<br><br>
+        This mirrors the layout pattern used by Amazon, Shopify, and high-converting B2B product pages — keeping the purchase path permanently accessible without forcing the user to scroll back up.
+      </p>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Add-to-cart rate (CTA always visible)</li>
+          <li>Time on page (content is explorable)</li>
+          <li>Bounce rate reduction (product anchored)</li>
+          <li>Mobile: panel collapses to top, thumbs go horizontal</li>
+        </ul>
+      </div>
+      <div class="warning-box">
+        <strong>Dev note</strong>
+        The sticky panel width is set to <code>520px</code> fixed. On viewports under 900px it collapses to <code>grid-template-columns: 1fr</code>. Ensure the WordPress theme wrapper does not apply <code>overflow: hidden</code> on the parent — this breaks <code>position: sticky</code>.
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Current</span>
+          <span class="panel-file">product page — single column layout</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-com">/* Original — single column, no sticky behaviour */</span>
+<span class="hl-tag">.product-layout</span> {
+  <span class="hl-attr">display</span>: <span class="hl-val">block</span>;     <span class="hl-com">/* stacked vertically */</span>
+  <span class="hl-attr">max-width</span>: <span class="hl-val">1200px</span>;
+  <span class="hl-attr">margin</span>: <span class="hl-val">0 auto</span>;
+}
+
+<span class="hl-com">/* Image and purchase section — scrolled away with content */</span>
+<span class="hl-tag">.product-image-wrap</span> {
+  <span class="hl-attr">width</span>: <span class="hl-val">100%</span>;
+  <span class="hl-attr">max-height</span>: <span class="hl-val">400px</span>;   <span class="hl-com">/* small, non-zooming */</span>
+  <span class="hl-attr">overflow</span>: <span class="hl-val">hidden</span>;
+}
+
+<span class="hl-com">/* Order button — below image, lost on scroll */</span>
+<span class="hl-tag">.btn-primary</span> {
+  <span class="hl-attr">position</span>: <span class="hl-val">static</span>;
+  <span class="hl-attr">margin-top</span>: <span class="hl-val">20px</span>;
+}</pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Proposed</span>
+          <span class="panel-file">lanyard_product_page.html — sticky + scrollable grid</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-com">/* NEW — two-column grid: sticky left, scrollable right */</span>
+<span class="hl-new"><span class="hl-tag">.product-layout</span> {
+  <span class="hl-attr">display</span>: <span class="hl-val">grid</span>;
+  <span class="hl-attr">grid-template-columns</span>: <span class="hl-val">520px 1fr</span>;
+  <span class="hl-attr">max-width</span>: <span class="hl-val">1380px</span>;
+  <span class="hl-attr">margin</span>: <span class="hl-val">0 auto</span>;
+}</span>
+
+<span class="hl-new"><span class="hl-tag">.sticky-panel</span> {
+  <span class="hl-attr">position</span>: <span class="hl-val">sticky</span>;
+  <span class="hl-attr">top</span>: <span class="hl-val">65px</span>;  <span class="hl-com">/* clears sticky header */</span>
+  <span class="hl-attr">height</span>: <span class="hl-val">calc(100vh - 65px)</span>;
+  <span class="hl-attr">overflow-y</span>: <span class="hl-val">auto</span>;
+}</span>
+
+<span class="hl-new"><span class="hl-tag">.scroll-content</span> {
+  <span class="hl-attr">overflow-y</span>: <span class="hl-val">auto</span>;
+  <span class="hl-attr">background</span>: <span class="hl-val">var(--white)</span>;
+}</span>
+
+<span class="hl-com">/* Mobile: collapses to single column */</span>
+<span class="hl-tag">@media (max-width: 900px)</span> {
+  <span class="hl-attr">.product-layout</span> { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.sticky-panel</span>   { <span class="hl-val">position: static; height: auto</span>; }
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 2: IMAGE GALLERY -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s2" class="section-head">
+    <div class="section-num">2</div>
+    <h2>Image Gallery — 1080×1080 Main Image + 6 Shot-Type Thumbnails</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-ux">UX / SEO</div>
+      <div class="change-title">Small static image → 1080×1080 large viewer with vertical thumb strip & zoom modal</div>
+      <p class="change-desc">
+        The current page displays a single product image at roughly 400px, embedded inline with the text. There were no thumbnails showing alternative views, no zoom capability, and no way for the visitor to inspect the product closely.<br><br>
+        The proposed design implements a vertical thumbnail strip on the left (6 thumbnails) feeding a large 1:1 main image on the right. Clicking the main image opens a full-screen zoom modal. Each thumbnail represents a <em>different shot type</em> of the same product — not a different product variant:
+      </p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:#374151;padding-left:2px;">
+        <li style="padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:#2e8b22;font-weight:700;">1</span> Wide-shot on white background</li>
+        <li style="padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:#2e8b22;font-weight:700;">2</span> Close-up fabric / weave texture</li>
+        <li style="padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:#2e8b22;font-weight:700;">3</span> Male lifestyle mockup (man wearing)</li>
+        <li style="padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:#2e8b22;font-weight:700;">4</span> Female lifestyle mockup (woman wearing)</li>
+        <li style="padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:#2e8b22;font-weight:700;">5</span> Hook / buckle / clip hardware close-up</li>
+        <li style="padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:#2e8b22;font-weight:700;">6</span> Custom logo / silk screen print close-up</li>
+      </ul>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Google Image Search impressions (1080px images preferred)</li>
+          <li>ImageGallery rich result eligibility</li>
+          <li>Purchase confidence (product detail visible)</li>
+          <li>Return rate reduction (accurate expectations)</li>
+        </ul>
+      </div>
+      <div class="warning-box">
+        <strong>Action required</strong>
+        Currently all 6 thumbnails point to the same source image (the one available on the live site). Badge-A-Minit's photographer or design team needs to produce the 5 additional shot types (fabric close-up, male/female mockups, hook detail, logo close-up) at 1080×1080px and replace the <code>src</code> URLs in the thumbnail and ImageGallery schema accordingly.
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Current</span>
+          <span class="panel-file">original product page — single static image</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-com">&lt;!-- Single image, no thumbnails, no zoom --&gt;</span>
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"product-image"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;img</span>
+    <span class="hl-attr">src</span>=<span class="hl-str">"polyester-lanyard-...8605.jpg"</span>
+    <span class="hl-attr">alt</span>=<span class="hl-str">"Polyester Lanyard with Silk Screen Printing"</span>
+    <span class="hl-com">// no width/height, no loading attr, no title</span>
+  <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span>
+
+<span class="hl-com">&lt;!-- No thumbnails strip --&gt;</span>
+<span class="hl-com">&lt;!-- No zoom capability --&gt;</span>
+<span class="hl-com">&lt;!-- No shot-type labelling --&gt;</span>
+<span class="hl-com">&lt;!-- No colour swatches --&gt;</span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Proposed</span>
+          <span class="panel-file">lanyard_product_page.html — full image viewer</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-com">&lt;!-- Vertical thumbs LEFT, 1080×1080 main image RIGHT --&gt;</span>
+<span class="hl-new"><span class="hl-tag">&lt;figure</span> <span class="hl-attr">class</span>=<span class="hl-str">"image-viewer"</span>
+  <span class="hl-attr">role</span>=<span class="hl-str">"group"</span>
+  <span class="hl-attr">aria-label</span>=<span class="hl-str">"Product image gallery"</span><span class="hl-tag">&gt;</span>
+
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"thumb-strip"</span>
+    <span class="hl-attr">role</span>=<span class="hl-str">"list"</span>
+    <span class="hl-attr">aria-label</span>=<span class="hl-str">"6 product shot types"</span><span class="hl-tag">&gt;</span>
+
+    <span class="hl-com">&lt;!-- Shot 1 of 6: Wide shot --&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"thumb active"</span>
+      <span class="hl-attr">role</span>=<span class="hl-str">"listitem"</span>
+      <span class="hl-attr">data-shot</span>=<span class="hl-str">"wide-shot"</span>
+      <span class="hl-attr">data-label</span>=<span class="hl-str">"Wide Shot — Full Product View"</span>
+      <span class="hl-attr">onclick</span>=<span class="hl-str">"switchImg(this, '[src]',
+        'A wide-shot photo of Polyester Lanyard
+        (Silk Screen Printing) placed on a white
+        background. Explore and Buy Now from
+        Badge-A-Minit.',
+        'Wide-Shot View of Polyester Lanyard ...
+        minimum order of 50 units starts at
+        $2.44 per unit. Buy Now from Badge-A-Minit.',
+        'Wide Shot — Full Product View')"</span>
+      <span class="hl-attr">aria-label</span>=<span class="hl-str">"View 1 of 6: Wide-shot"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;img</span> <span class="hl-attr">src</span>=<span class="hl-str">"..."</span>
+        <span class="hl-attr">width</span>=<span class="hl-str">"68"</span> <span class="hl-attr">height</span>=<span class="hl-str">"68"</span>
+        <span class="hl-attr">loading</span>=<span class="hl-str">"eager"</span><span class="hl-tag">/&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-str">"thumb-label"</span><span class="hl-tag">&gt;</span>Full<span class="hl-tag">&lt;/span&gt;</span>
+    <span class="hl-tag">&lt;/div&gt;</span>
+    <span class="hl-com">&lt;!-- Shots 2–6: Fabric, Male, Female,
+         Hook, Logo (same pattern) --&gt;</span>
+  <span class="hl-tag">&lt;/div&gt;</span>
+
+  <span class="hl-com">&lt;!-- Main image: 1080×1080, zoom on click --&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"product-image-main"</span>
+    <span class="hl-attr">onclick</span>=<span class="hl-str">"openZoom()"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;img</span> <span class="hl-attr">id</span>=<span class="hl-str">"mainImg"</span>
+      <span class="hl-attr">width</span>=<span class="hl-str">"1080"</span> <span class="hl-attr">height</span>=<span class="hl-str">"1080"</span>
+      <span class="hl-attr">loading</span>=<span class="hl-str">"eager"</span>
+      <span class="hl-attr">fetchpriority</span>=<span class="hl-str">"high"</span><span class="hl-tag">/&gt;</span>
+    <span class="hl-com">&lt;!-- alt + title set dynamically per shot --&gt;</span>
+    <span class="hl-tag">&lt;span</span> <span class="hl-attr">id</span>=<span class="hl-str">"imgShotLabel"</span>
+      <span class="hl-attr">aria-live</span>=<span class="hl-str">"polite"</span><span class="hl-tag">&gt;</span>Wide Shot<span class="hl-tag">&lt;/span&gt;</span>
+  <span class="hl-tag">&lt;/div&gt;</span>
+<span class="hl-tag">&lt;/figure&gt;</span></span>
+
+<span class="hl-com">&lt;!-- Zoom modal (appended to body, ESC to close) --&gt;</span>
+<span class="hl-new"><span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"zoom-overlay"</span>
+  <span class="hl-attr">id</span>=<span class="hl-str">"zoomOverlay"</span>
+  <span class="hl-attr">role</span>=<span class="hl-str">"dialog"</span>
+  <span class="hl-attr">aria-modal</span>=<span class="hl-str">"true"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-str">"zoom-close"</span>
+    <span class="hl-attr">onclick</span>=<span class="hl-str">"closeZoom()"</span>
+    <span class="hl-attr">aria-label</span>=<span class="hl-str">"Close zoomed image"</span><span class="hl-tag">&gt;</span>✕<span class="hl-tag">&lt;/button&gt;</span>
+  <span class="hl-tag">&lt;img</span> <span class="hl-attr">id</span>=<span class="hl-str">"zoomImg"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 3: ALT & TITLE TEXT -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s3" class="section-head">
+    <div class="section-num">3</div>
+    <h2>Programmatic Alt Text & Title — Per Shot Type, Per Colour</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-seo">SEO</div>
+      <div class="change-tag tag-a11y">Accessibility</div>
+      <div class="change-title">Generic static alt → dynamic shot-specific alt + title, auto-updating on switch</div>
+      <p class="change-desc">
+        The current image has a single generic alt text that did not describe the shot, the context, the brand, or include any conversion-oriented signal. Title was absent entirely.<br><br>
+        The proposed implementation assigns unique, descriptive alt and title text to every thumbnail, the main image, and each zoom state. When a user clicks a thumbnail or colour swatch, the <code>switchImg()</code> JS function updates <code>mainImg.alt</code> and <code>mainImg.title</code> programmatically so Google always reads the correct descriptor for whichever image is in view.<br><br>
+        Format agreed with client:
+      </p>
+      <div style="background:#0d1117;border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:11.5px;color:#e6edf3;line-height:1.7;">
+        <span style="color:#8b949e;">// Alt text format:</span><br>
+        <span style="color:#a8ff78;">"A wide-shot photo of [Product Name] placed on a white background for visual understanding. Explore and Buy Now from [Brand Name]."</span><br><br>
+        <span style="color:#8b949e;">// Title text format:</span><br>
+        <span style="color:#a8ff78;">"Wide-Shot View of [Product Name] with a minimum order of [X] units starts at $[x.xx] per unit. Buy Now from [Brand Name]."</span>
+      </div>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Google Image Search click-through rate</li>
+          <li>Screen reader user experience (WCAG 2.1 AA)</li>
+          <li>Image indexing in Google Shopping</li>
+          <li>SERP snippet enrichment via title attribute</li>
+        </ul>
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Current</span>
+          <span class="panel-file">current — generic, static, no title</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del"><span class="hl-tag">&lt;img</span>
+  <span class="hl-attr">src</span>=<span class="hl-str">"polyester-lanyard-...8605.jpg"</span>
+  <span class="hl-attr">alt</span>=<span class="hl-str">"Polyester Lanyard with Silk Screen
+       Printing — Badge-A-Minit Australia"</span>
+  <span class="hl-com">// No title attribute</span>
+  <span class="hl-com">// No width / height (causes CLS)</span>
+  <span class="hl-com">// No loading="eager"</span>
+  <span class="hl-com">// No fetchpriority</span>
+<span class="hl-tag">/&gt;</span></span>
+
+<span class="hl-com">// Static — never updates when user
+// switches colour or variant</span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Proposed</span>
+          <span class="panel-file">lanyard_product_page.html — dynamic alt + title</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-com">&lt;!-- Main image — initial state --&gt;</span>
+<span class="hl-new"><span class="hl-tag">&lt;img</span> <span class="hl-attr">id</span>=<span class="hl-str">"mainImg"</span>
+  <span class="hl-attr">src</span>=<span class="hl-str">"polyester-lanyard-...8605.jpg"</span>
+  <span class="hl-attr">alt</span>=<span class="hl-str">"A wide-shot photo of Polyester Lanyard
+  (Silk Screen Printing) placed on a white
+  background for visual understanding.
+  Explore and Buy Now from Badge-A-Minit."</span>
+  <span class="hl-attr">title</span>=<span class="hl-str">"Wide-Shot View of Polyester Lanyard
+  (Silk Screen Printing) with a minimum
+  order of 50 units starts at $2.44 per
+  unit. Buy Now from Badge-A-Minit."</span>
+  <span class="hl-attr">width</span>=<span class="hl-str">"1080"</span> <span class="hl-attr">height</span>=<span class="hl-str">"1080"</span>
+  <span class="hl-attr">loading</span>=<span class="hl-str">"eager"</span>
+  <span class="hl-attr">fetchpriority</span>=<span class="hl-str">"high"</span>
+<span class="hl-tag">/&gt;</span></span>
+
+<span class="hl-com">// JS: updates alt+title on every thumb click</span>
+<span class="hl-new">function switchImg(thumb, src, alt, title, shot) {
+  const img = document.getElementById('mainImg');
+  img.src   = src;
+  img.alt   = alt;    <span class="hl-com">// shot-specific alt</span>
+  img.title = title;  <span class="hl-com">// shot-specific title</span>
+  document.getElementById('imgShotLabel')
+    .textContent = shot;
+}</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 4: HEADING HIERARCHY -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s4" class="section-head">
+    <div class="section-num">4</div>
+    <h2>Heading Hierarchy — Strict H1 → H2 → H3 Enforcement</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-seo">SEO</div>
+      <div class="change-tag tag-a11y">Accessibility</div>
+      <div class="change-title">Multiple H1s / flat heading structure → single H1 with correct H2/H3 cascade</div>
+      <p class="change-desc">
+        The current product page uses multiple H2 tags for both section titles and card-level sub-items, with no clear hierarchy. The page also lacked a dedicated H1 — the product title was rendered as a styled <code>&lt;div&gt;</code>.<br><br>
+        Google's NLP systems use heading hierarchy to understand content structure and extract featured snippet candidates. A flat or broken hierarchy confuses entity association and reduces eligibility for rich results.<br><br>
+        The proposed structure follows a strict cascade:
+      </p>
+      <div style="background:#f9fef6;border:1px solid var(--green-border);border-radius:8px;padding:12px 14px;font-size:12.5px;color:var(--green-dark);line-height:1.8;font-family:var(--mono);">
+        H1 (×1) — Polyester Lanyard (Silk Screen Printing)<br>
+        H2 (×11) — Section titles (Overview, Features, Pricing…)<br>
+        H3 (×21) — Sub-items (feature cards, step titles, FAQ Qs…)
+      </div>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Featured snippet eligibility for FAQ answers</li>
+          <li>NLP entity clarity for "polyester lanyard" topic</li>
+          <li>Screen reader navigation (landmark structure)</li>
+          <li>Core Web Vitals: no H1 confusion for LCP scoring</li>
+        </ul>
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Current</span>
+          <span class="panel-file">current — flat / broken hierarchy</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del"><span class="hl-com">&lt;!-- Product title: NOT an H1 --&gt;</span>
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"product-title"</span><span class="hl-tag">&gt;</span>
+  Polyester Lanyard (Silk Screen Printing)
+<span class="hl-tag">&lt;/div&gt;</span>
+
+<span class="hl-com">&lt;!-- Section titles: H2 --&gt;</span>
+<span class="hl-tag">&lt;h2&gt;</span>Why Polyester Lanyards?<span class="hl-tag">&lt;/h2&gt;</span>
+
+<span class="hl-com">&lt;!-- Feature card titles: also H2 (wrong) --&gt;</span>
+<span class="hl-tag">&lt;h2&gt;</span>Vibrant Silk Screen Printing<span class="hl-tag">&lt;/h2&gt;</span>
+<span class="hl-tag">&lt;h2&gt;</span>Durable Polyester Construction<span class="hl-tag">&lt;/h2&gt;</span>
+
+<span class="hl-com">&lt;!-- FAQ questions: plain button span --&gt;</span>
+<span class="hl-tag">&lt;button&gt;</span>
+  <span class="hl-tag">&lt;span&gt;</span>What is the difference...?<span class="hl-tag">&lt;/span&gt;</span>
+<span class="hl-tag">&lt;/button&gt;</span></span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Proposed</span>
+          <span class="panel-file">lanyard_product_page.html — strict cascade</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-com">&lt;!-- ONE H1: product title --&gt;</span>
+<span class="hl-new"><span class="hl-tag">&lt;h1</span> <span class="hl-attr">class</span>=<span class="hl-str">"product-main-title"</span><span class="hl-tag">&gt;</span>
+  Polyester Lanyard (Silk Screen Printing)
+<span class="hl-tag">&lt;/h1&gt;</span></span>
+
+<span class="hl-com">&lt;!-- H2: section title --&gt;</span>
+<span class="hl-new"><span class="hl-tag">&lt;h2</span> <span class="hl-attr">class</span>=<span class="hl-str">"section-h2"</span><span class="hl-tag">&gt;</span>
+  Six Reasons These Lanyards Deliver
+  Superior Results
+<span class="hl-tag">&lt;/h2&gt;</span></span>
+
+<span class="hl-com">&lt;!-- H3: feature card sub-items --&gt;</span>
+<span class="hl-new"><span class="hl-tag">&lt;h3</span> <span class="hl-attr">class</span>=<span class="hl-str">"fc-title"</span><span class="hl-tag">&gt;</span>
+  Vibrant Silk Screen Printing
+<span class="hl-tag">&lt;/h3&gt;</span></span>
+
+<span class="hl-com">&lt;!-- H3: FAQ questions (CSS-reset to match
+     accordion button style visually) --&gt;</span>
+<span class="hl-new"><span class="hl-tag">&lt;h3</span> <span class="hl-attr">class</span>=<span class="hl-str">"faq-h3"</span>
+  <span class="hl-attr">itemprop</span>=<span class="hl-str">"name"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-str">"faq-q"</span>
+    <span class="hl-attr">aria-expanded</span>=<span class="hl-str">"false"</span>
+    <span class="hl-attr">aria-controls</span>=<span class="hl-str">"faq0"</span><span class="hl-tag">&gt;</span>
+    What is the difference...?
+  <span class="hl-tag">&lt;/button&gt;</span>
+<span class="hl-tag">&lt;/h3&gt;</span></span>
+
+<span class="hl-com">/* faq-h3 CSS reset: visually invisible */</span>
+<span class="hl-new"><span class="hl-tag">.faq-h3</span> {
+  <span class="hl-attr">margin</span>: <span class="hl-val">0</span>; <span class="hl-attr">padding</span>: <span class="hl-val">0</span>;
+  <span class="hl-attr">font-size</span>: <span class="hl-val">inherit</span>;
+  <span class="hl-attr">font-weight</span>: <span class="hl-val">inherit</span>;
+  <span class="hl-attr">background</span>: <span class="hl-val">none</span>;
+  <span class="hl-attr">border</span>: <span class="hl-val">none</span>;
+}</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 5: BULK CALCULATOR -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s5" class="section-head">
+    <div class="section-num">5</div>
+    <h2>Bulk Price Calculator — Live Slider with 250+ Volume Discount Reveal</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-ux">UX / CRO</div>
+      <div class="change-title">Static pricing table → interactive live calculator with savings display</div>
+      <p class="change-desc">
+        The current page shows pricing in a static HTML table. Users had to mentally calculate their total and find their applicable tier — a known friction point for B2B buyers ordering in bulk.<br><br>
+        The proposed calculator lets buyers select lanyard width, print side (single/double), drag a quantity slider (50–2,000), and instantly see unit price, total cost, and savings vs. single-unit rate. When quantity exceeds 250 units, a green savings banner appears automatically.<br><br>
+        The calculator exists in two places: inline in the sticky left panel (for immediate purchase decisions) and as a full-width section in the scrollable content area (for deeper exploration).
+      </p>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Average order value (volume incentive visible)</li>
+          <li>Dwell time (interactive engagement)</li>
+          <li>Conversion rate (removes pricing friction)</li>
+          <li>Quote request rate (for larger quantities)</li>
+        </ul>
+      </div>
+      <div class="warning-box">
+        <strong>Pricing accuracy</strong>
+        All pricing data is hardcoded from the live product page at time of build. If Badge-A-Minit updates pricing in their CMS, this file must be updated to match. Recommend linking the calculator to a live pricing API endpoint if available.
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Current</span>
+          <span class="panel-file">current — static HTML table only</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del"><span class="hl-com">&lt;!-- No calculator. Static table only. --&gt;</span>
+<span class="hl-tag">&lt;table&gt;</span>
+  <span class="hl-tag">&lt;tr&gt;</span>
+    <span class="hl-tag">&lt;td&gt;</span>PL-Single-01<span class="hl-tag">&lt;/td&gt;</span>
+    <span class="hl-tag">&lt;td&gt;</span>1 × 90cm<span class="hl-tag">&lt;/td&gt;</span>
+    <span class="hl-tag">&lt;td&gt;</span>$3.75<span class="hl-tag">&lt;/td&gt;</span>
+    <span class="hl-tag">&lt;td&gt;</span>$2.44<span class="hl-tag">&lt;/td&gt;</span>
+    <span class="hl-com">&lt;!-- user must manually calculate total --&gt;</span>
+  <span class="hl-tag">&lt;/tr&gt;</span>
+<span class="hl-tag">&lt;/table&gt;</span>
+<span class="hl-com">&lt;!-- No interaction. No savings shown.
+     No width/side selector.
+     No visual feedback. --&gt;</span></span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Proposed</span>
+          <span class="panel-file">lanyard_product_page.html — live calculator JS</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new">const PRICES = {
+  <span class="hl-str">'1'</span>:   { s: [2.44,1.95,1.50,1.31,1.13,0.86],
+           d: [2.54,2.03,1.56,1.37,1.17,0.90] },
+  <span class="hl-str">'1.5'</span>: { s: [2.54,2.03,1.56,1.37,1.17,0.90],
+           d: [2.63,2.11,1.62,1.42,1.22,0.93] },
+  <span class="hl-com">// ... 2cm and 2.5cm rows</span>
+};
+const TIERS = [50,250,500,1000,2500,5000,10000];
+
+function getPrice(qty, size, side) {
+  const p = PRICES[size][side];
+  for (let i = TIERS.length-1; i >= 0; i--) {
+    if (qty >= TIERS[i]) return p[i];
+  }
+  return p[0];
+}
+
+function updateCalc() {
+  const qty   = parseInt(range.value);
+  const price = getPrice(qty, cSize, cSide);
+  const total = Math.round(price * qty);
+  const saved = Math.round((cRetail - price) * qty);
+
+  <span class="hl-com">// Live DOM updates</span>
+  calcUnit.textContent  = '$' + price.toFixed(2);
+  calcTotal.textContent = '$' + total.toLocaleString();
+  calcSaved.textContent = '$' + Math.max(0,saved)
+                               .toLocaleString();
+
+  <span class="hl-com">// Reveal savings banner at 250+ units</span>
+  if (qty >= 250) {
+    banner.classList.add('on');
+    bannerAmt.textContent = '$' + saved.toLocaleString();
+  } else {
+    banner.classList.remove('on');
+  }
+}</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 6: STRUCTURED DATA -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s6" class="section-head">
+    <div class="section-num">6</div>
+    <h2>Structured Data — 6 JSON-LD Schemas Added</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-schema">Schema.org</div>
+      <div class="change-title">No structured data → 6 JSON-LD schemas covering all rich result types</div>
+      <p class="change-desc">
+        The current product page has zero structured data specific to the product itself. The category/landing page has a partial ItemList schema but it is missing required Merchant Centre fields.<br><br>
+        Six separate JSON-LD blocks are proposed to be added to the <code>&lt;head&gt;</code>:
+      </p>
+      <ol style="list-style:decimal;padding-left:18px;font-size:12.5px;color:#374151;line-height:2;">
+        <li><strong>BreadcrumbList</strong> — trail in SERPs</li>
+        <li><strong>Product + Merchant Centre</strong> — price, availability, shipping, returns, reviews</li>
+        <li><strong>ItemList</strong> — all 8 SKU variants with image, description, brand, mpn</li>
+        <li><strong>FAQPage</strong> — 7 questions with acceptedAnswer</li>
+        <li><strong>LocalBusiness</strong> — address, hours, geo, Maps URL, rating</li>
+        <li><strong>ImageGallery</strong> — 6 ImageObject entries, one per shot type</li>
+      </ol>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Google Shopping / Merchant Centre eligibility</li>
+          <li>FAQ expandable rich results in SERPs</li>
+          <li>Breadcrumb trail reducing SERP bounce</li>
+          <li>Knowledge panel for local business</li>
+          <li>Image carousel rich results</li>
+        </ul>
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Current</span>
+          <span class="panel-file">original product page — zero product schemas</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del"><span class="hl-com">&lt;!-- No BreadcrumbList --&gt;</span>
+<span class="hl-com">&lt;!-- No Product schema --&gt;</span>
+<span class="hl-com">&lt;!-- No ItemList on product page --&gt;</span>
+<span class="hl-com">&lt;!-- No FAQPage --&gt;</span>
+<span class="hl-com">&lt;!-- No LocalBusiness --&gt;</span>
+<span class="hl-com">&lt;!-- No ImageGallery --&gt;</span>
+
+<span class="hl-com">&lt;!-- Category page (lanyards) had partial
+     ItemList BUT missing on each variant: --&gt;</span>
+<span class="hl-com">//  ✗ image field → CRITICAL ERROR</span>
+<span class="hl-com">//  ✗ description field → warning</span>
+<span class="hl-com">//  ✗ brand field → warning</span>
+<span class="hl-com">//  ✗ mpn / gtin → warning</span>
+<span class="hl-com">//  ✗ shippingDetails → warning</span>
+<span class="hl-com">//  ✗ hasMerchantReturnPolicy → warning</span></span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Proposed</span>
+          <span class="panel-file">lanyard_product_page.html — all 6 schemas</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new"><span class="hl-com">/* 1 — BreadcrumbList */</span>
+{ <span class="hl-key">"@type"</span>: <span class="hl-str">"BreadcrumbList"</span>,
+  <span class="hl-key">"itemListElement"</span>: [
+    { <span class="hl-key">"position"</span>: 1, <span class="hl-key">"name"</span>: <span class="hl-str">"Home"</span>,
+      <span class="hl-key">"item"</span>: <span class="hl-str">"https://badge-a-minit.com.au"</span> },
+    { <span class="hl-key">"position"</span>: 2, <span class="hl-key">"name"</span>: <span class="hl-str">"Lanyards"</span>,
+      <span class="hl-key">"item"</span>: <span class="hl-str">"...com.au/products/lanyards"</span> },
+    { <span class="hl-key">"position"</span>: 3, <span class="hl-key">"name"</span>: <span class="hl-str">"Polyester Lanyard..."</span>,
+      <span class="hl-key">"item"</span>: <span class="hl-str">"...product/polyester-lanyard-..."</span> }
+  ]}
+
+<span class="hl-com">/* 2 — Product + Merchant Centre */</span>
+{ <span class="hl-key">"@type"</span>: <span class="hl-str">"Product"</span>,
+  <span class="hl-key">"name"</span>: <span class="hl-str">"Polyester Lanyard..."</span>,
+  <span class="hl-key">"image"</span>: <span class="hl-str">"...8605.jpg"</span>,       <span class="hl-com">// ✓</span>
+  <span class="hl-key">"brand"</span>: { <span class="hl-key">"name"</span>: <span class="hl-str">"Badge-A-Minit"</span> }, <span class="hl-com">// ✓</span>
+  <span class="hl-key">"aggregateRating"</span>: { ... },         <span class="hl-com">// ✓</span>
+  <span class="hl-key">"review"</span>: [ ... ],                  <span class="hl-com">// ✓ 3 reviews</span>
+  <span class="hl-key">"offers"</span>: {
+    <span class="hl-key">"@type"</span>: <span class="hl-str">"AggregateOffer"</span>,
+    <span class="hl-key">"lowPrice"</span>: <span class="hl-str">"0.86"</span>,              <span class="hl-com">// ✓</span>
+    <span class="hl-key">"shippingDetails"</span>: { ... },        <span class="hl-com">// ✓</span>
+    <span class="hl-key">"hasMerchantReturnPolicy"</span>: { ... } <span class="hl-com">// ✓</span>
+  }
+}
+
+<span class="hl-com">/* 3 — ItemList: all 8 variants NOW have */</span>
+{ <span class="hl-key">"@type"</span>: <span class="hl-str">"Product"</span>,
+  <span class="hl-key">"image"</span>: <span class="hl-str">"...8605.jpg"</span>,  <span class="hl-com">// ✓ was MISSING</span>
+  <span class="hl-key">"description"</span>: <span class="hl-str">"..."</span>,    <span class="hl-com">// ✓ was MISSING</span>
+  <span class="hl-key">"brand"</span>: { <span class="hl-key">"name"</span>: <span class="hl-str">"Badge-A-Minit"</span> }, <span class="hl-com">// ✓</span>
+  <span class="hl-key">"mpn"</span>: <span class="hl-str">"PL-POLY-SILK-S01"</span>  <span class="hl-com">// ✓ new</span>
+}</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 7: META & OG TAGS -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s7" class="section-head">
+    <div class="section-num">7</div>
+    <h2>Open Graph & Twitter/X Card Meta Tags</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-seo">SEO</div>
+      <div class="change-title">Generic website OG tags → full product OG tags with price, availability, image dimensions</div>
+      <p class="change-desc">
+        The current page uses <code>og:type = "website"</code> — the most basic and least informative type. The image pointed to the site logo, not the product. No product-specific OG properties (price, availability, condition, brand) were present.<br><br>
+        The proposed implementation uses <code>og:type = "product"</code> with 10 OG properties and 6 Twitter card tags, including the 1080×1080 product image with explicit <code>og:image:width</code> and <code>og:image:height</code>. The <code>product:price:amount</code>, <code>product:availability</code>, <code>product:brand</code>, and <code>product:condition</code> Facebook/Pinterest product properties are included.
+      </p>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Facebook/LinkedIn share previews show product image + price</li>
+          <li>Pinterest Rich Pin eligibility</li>
+          <li>WhatsApp share shows product image correctly</li>
+          <li>Twitter/X summary large image card in tweets</li>
+        </ul>
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Current</span>
+          <span class="panel-file">current — generic og:type website</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del"><span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"og:type"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"website"</span><span class="hl-tag">/&gt;</span>  <span class="hl-com">← not "product"</span>
+
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"og:image"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">".../BADGE.jpg.png"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-com">  ← site logo, not product image</span>
+
+<span class="hl-com">&lt;!-- Missing entirely: --&gt;</span>
+<span class="hl-com">//  og:image:width / height</span>
+<span class="hl-com">//  og:image:alt</span>
+<span class="hl-com">//  og:locale</span>
+<span class="hl-com">//  product:price:amount</span>
+<span class="hl-com">//  product:availability</span>
+<span class="hl-com">//  product:brand</span>
+<span class="hl-com">//  product:condition</span>
+<span class="hl-com">//  twitter:card</span>
+<span class="hl-com">//  twitter:image:alt</span></span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Proposed</span>
+          <span class="panel-file">lanyard_product_page.html — full product OG + Twitter</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new"><span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"og:type"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"product"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"og:site_name"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"Badge-A-Minit"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"og:image"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"...polyester-lanyard-...8605.jpg"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"og:image:width"</span>   <span class="hl-attr">content</span>=<span class="hl-str">"1080"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"og:image:height"</span>  <span class="hl-attr">content</span>=<span class="hl-str">"1080"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"og:image:alt"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"A wide-shot photo of Polyester
+  Lanyard..."</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"og:locale"</span>  <span class="hl-attr">content</span>=<span class="hl-str">"en_AU"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"product:price:amount"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"2.44"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"product:price:currency"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"AUD"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"product:availability"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"in stock"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"product:brand"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"Badge-A-Minit"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">property</span>=<span class="hl-str">"product:condition"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"new"</span><span class="hl-tag">/&gt;</span>
+
+<span class="hl-com">&lt;!-- Twitter/X Card --&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">name</span>=<span class="hl-str">"twitter:card"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"summary_large_image"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">name</span>=<span class="hl-str">"twitter:image:alt"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"Wide-shot of Polyester Lanyard..."</span><span class="hl-tag">/&gt;</span></span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 8: ROBOTS & CANONICAL -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s8" class="section-head">
+    <div class="section-num">8</div>
+    <h2>Robots Meta & Dynamic Canonical URL</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-seo">SEO</div>
+      <div class="change-title">No robots directive + static canonical → noindex+nofollow with max-preview + dynamic canonical</div>
+      <p class="change-desc">
+        This is a <strong>proposed</strong> change for the staging/experimental version of the file. The robots meta is intentionally set to <code>noindex, nofollow</code> so Google does not index this version while it is being tested. However, the <code>max-snippet:-1</code>, <code>max-image-preview:large</code>, and <code>max-video-preview:-1</code> directives are included so Google can still render full previews if it does crawl the page — useful for staging QA against Search Console.<br><br>
+        The proposed canonical would be set dynamically via JavaScript to strip all UTM parameters, fbclid, gclid, and ref parameters before writing the canonical link tag — preventing duplicate content signals from campaign traffic.
+      </p>
+      <div class="warning-box">
+        <strong>Production deployment note</strong>
+        When implementing: change <code>noindex, nofollow</code> to <code>index, follow</code> before going live. The max-preview directives should remain. The dynamic canonical script should remain as-is.
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Current</span>
+          <span class="panel-file">current — no robots directive, static canonical</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del"><span class="hl-com">&lt;!-- No robots meta tag at all --&gt;</span>
+
+<span class="hl-com">&lt;!-- Static canonical — won't strip UTM params
+     from campaign traffic URLs --&gt;</span>
+<span class="hl-tag">&lt;link</span> <span class="hl-attr">rel</span>=<span class="hl-str">"canonical"</span>
+  <span class="hl-attr">href</span>=<span class="hl-str">"https://badge-a-minit.com.au/
+  products/lanyards"</span><span class="hl-tag">/&gt;</span>
+<span class="hl-com">&lt;!-- Also: canonical points to category page,
+     not the individual product page --&gt;</span></span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Proposed</span>
+          <span class="panel-file">lanyard_product_page.html — robots + dynamic canonical</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new"><span class="hl-com">&lt;!-- Robots: noindex for staging,
+     max-preview for SERP preview quality --&gt;</span>
+<span class="hl-tag">&lt;meta</span> <span class="hl-attr">name</span>=<span class="hl-str">"robots"</span>
+  <span class="hl-attr">content</span>=<span class="hl-str">"noindex, nofollow,
+  max-snippet:-1,
+  max-image-preview:large,
+  max-video-preview:-1"</span><span class="hl-tag">/&gt;</span>
+
+<span class="hl-com">&lt;!-- Dynamic canonical — strips tracking params --&gt;</span>
+<span class="hl-tag">&lt;link</span> <span class="hl-attr">rel</span>=<span class="hl-str">"canonical"</span> <span class="hl-attr">id</span>=<span class="hl-str">"canonicalTag"</span>
+  <span class="hl-attr">href</span>=<span class="hl-str">"...product/polyester-lanyard-..."</span><span class="hl-tag">/&gt;</span>
+
+<span class="hl-tag">&lt;script&gt;</span>
+(function() {
+  var url = new URL(window.location.href);
+  <span class="hl-com">// Strip all campaign & tracking params</span>
+  ['utm_source','utm_medium','utm_campaign',
+   'utm_term','utm_content','ref',
+   'fbclid','gclid'].forEach(function(p) {
+    url.searchParams.delete(p);
+  });
+  document.getElementById('canonicalTag')
+    .setAttribute('href', url.href);
+})();
+<span class="hl-tag">&lt;/script&gt;</span></span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 9: MERCHANT LISTING SCHEMA -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s9" class="section-head">
+    <div class="section-num">9</div>
+    <h2>Merchant Listing Schema — Shipping & Returns from Live URLs</h2>
+  </div>
+
+  <div class="scope-block">
+    <h3>Relevant URLs for Merchant Centre Enrichment</h3>
+    <p>
+      The following Badge-A-Minit pages contain data that should be referenced in the Product schema's
+      <code>shippingDetails</code> and <code>hasMerchantReturnPolicy</code> fields. These pages returned
+      403 errors during automated fetch at build time — values below are estimated from page names
+      and must be confirmed against live page content before production deployment.
+    </p>
+    <ul>
+      <li><strong>Shipping details source:</strong> <a href="https://badge-a-minit.com.au/shipping-options" target="_blank">badge-a-minit.com.au/shipping-options</a> — use for transit times, rates, and destination regions</li>
+      <li><strong>Delivery information:</strong> <a href="https://badge-a-minit.com.au/delivery-information" target="_blank">badge-a-minit.com.au/delivery-information</a> — confirm business day handling time and cut-off times</li>
+      <li><strong>Return policy source:</strong> <a href="https://badge-a-minit.com.au/terms-and-conditions" target="_blank">badge-a-minit.com.au/terms-and-conditions</a> — use for <code>returnPolicyCategory</code> and <code>merchantReturnLink</code></li>
+    </ul>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-schema">Schema.org</div>
+      <div class="change-tag tag-critical">Priority: Critical Fix Required</div>
+      <div class="change-title">Missing image/description/brand on ItemList variants → all 8 variants fully enriched</div>
+      <p class="change-desc">
+        Google's Rich Results Test reported <strong>1 critical issue</strong> and <strong>4 non-critical issues</strong> per variant — across all 8 — in the Merchant Listings test. The critical issue was the missing <code>image</code> field. The non-critical issues were missing <code>description</code>, <code>brand</code>, <code>shippingDetails</code>, and <code>hasMerchantReturnPolicy</code>.<br><br>
+        All 8 variants should include the following fields which are currently absent: <code>image</code>, <code>description</code>, <code>brand</code>, <code>mpn</code>, <code>itemCondition</code>, and <code>seller</code>. The <code>shippingDetails</code> and <code>hasMerchantReturnPolicy</code> are included on the parent Product schema with estimated values — these need to be verified against the live shipping and T&C pages listed above.
+      </p>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Critical error eliminated (was blocking Merchant Centre)</li>
+          <li>All 8 variants eligible for Google Shopping</li>
+          <li>Product annotation in Google Images</li>
+          <li>Seller rating potential via review count</li>
+        </ul>
+      </div>
+      <div class="warning-box">
+        <strong>Confirm before go-live</strong>
+        Verify exact shipping transit times and return policy category against live pages. Current schema uses <code>MerchantReturnNotPermitted</code> — update to <code>MerchantReturnFiniteReturnWindow</code> or <code>MerchantReturnUnlimitedWindow</code> if Badge-A-Minit accepts returns.
+      </div>
+      <div class="ref-links">
+        <a href="https://developers.google.com/search/docs/appearance/structured-data/product" target="_blank">Google: Product structured data guide</a>
+        <a href="https://search.google.com/test/rich-results" target="_blank">Google Rich Results Test tool</a>
+        <a href="https://schema.org/MerchantReturnPolicy" target="_blank">Schema.org: MerchantReturnPolicy</a>
+        <a href="https://schema.org/OfferShippingDetails" target="_blank">Schema.org: OfferShippingDetails</a>
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Current</span>
+          <span class="panel-file">ItemList variant — missing required fields (critical error)</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del">{
+  <span class="hl-key">"@type"</span>: <span class="hl-str">"ListItem"</span>,
+  <span class="hl-key">"position"</span>: 8,
+  <span class="hl-key">"item"</span>: {
+    <span class="hl-key">"@type"</span>: <span class="hl-str">"Product"</span>,
+    <span class="hl-key">"name"</span>: <span class="hl-str">"Polyester Lanyard — 2.5cm × 90cm,
+             Double Sided (PL-Double-08)"</span>,
+    <span class="hl-key">"sku"</span>: <span class="hl-str">"PL-Double-08"</span>,
+    <span class="hl-com">// ✗ MISSING: "image"  → CRITICAL ERROR</span>
+    <span class="hl-com">// ✗ MISSING: "description"</span>
+    <span class="hl-com">// ✗ MISSING: "brand"</span>
+    <span class="hl-com">// ✗ MISSING: "mpn"</span>
+    <span class="hl-key">"offers"</span>: {
+      <span class="hl-key">"@type"</span>: <span class="hl-str">"Offer"</span>,
+      <span class="hl-key">"priceCurrency"</span>: <span class="hl-str">"AUD"</span>,
+      <span class="hl-key">"price"</span>: <span class="hl-str">"3.07"</span>,
+      <span class="hl-key">"availability"</span>: <span class="hl-str">"...InStock"</span>
+      <span class="hl-com">// ✗ MISSING: shippingDetails</span>
+      <span class="hl-com">// ✗ MISSING: hasMerchantReturnPolicy</span>
+    }
+  }
+}</span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Proposed</span>
+          <span class="panel-file">lanyard_product_page.html — fully enriched variant</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new">{
+  <span class="hl-key">"@type"</span>: <span class="hl-str">"ListItem"</span>,
+  <span class="hl-key">"position"</span>: 8,
+  <span class="hl-key">"item"</span>: {
+    <span class="hl-key">"@type"</span>: <span class="hl-str">"Product"</span>,
+    <span class="hl-key">"name"</span>: <span class="hl-str">"Polyester Lanyard — 2.5cm × 90cm,
+             Double Sided (PL-Double-08)"</span>,
+    <span class="hl-key">"description"</span>: <span class="hl-str">"Polyester Lanyard with silk
+      screen printing — 2.5cm wide × 90cm
+      long, double-sided print. Widest
+      option with full branding on both
+      faces. Minimum order 50 units."</span>,
+    <span class="hl-key">"sku"</span>: <span class="hl-str">"PL-Double-08"</span>,
+    <span class="hl-key">"mpn"</span>: <span class="hl-str">"PL-POLY-SILK-D08"</span>,
+    <span class="hl-key">"image"</span>: <span class="hl-str">"...polyester-lanyard-...8605.jpg"</span>,
+    <span class="hl-key">"url"</span>: <span class="hl-str">"...product/polyester-lanyard-..."</span>,
+    <span class="hl-key">"brand"</span>: {
+      <span class="hl-key">"@type"</span>: <span class="hl-str">"Brand"</span>,
+      <span class="hl-key">"name"</span>: <span class="hl-str">"Badge-A-Minit"</span>
+    },
+    <span class="hl-key">"offers"</span>: {
+      <span class="hl-key">"@type"</span>: <span class="hl-str">"Offer"</span>,
+      <span class="hl-key">"priceCurrency"</span>: <span class="hl-str">"AUD"</span>,
+      <span class="hl-key">"price"</span>: <span class="hl-str">"3.07"</span>,
+      <span class="hl-key">"availability"</span>: <span class="hl-str">"...InStock"</span>,
+      <span class="hl-key">"itemCondition"</span>: <span class="hl-str">"...NewCondition"</span>,
+      <span class="hl-key">"seller"</span>: {
+        <span class="hl-key">"@type"</span>: <span class="hl-str">"Organization"</span>,
+        <span class="hl-key">"name"</span>: <span class="hl-str">"Badge-A-Minit"</span>
+      }
+    }
+  }
+}</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 10: FAQ SCHEMA -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s10" class="section-head">
+    <div class="section-num">10</div>
+    <h2>FAQ — H3 Headings + FAQPage Schema + itemprop Microdata</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-schema">Schema.org</div>
+      <div class="change-tag tag-a11y">Accessibility</div>
+      <div class="change-title">Button-only accordion → H3-wrapped + JSON-LD FAQPage + itemprop microdata + aria-expanded</div>
+      <p class="change-desc">
+        Three separate improvements are proposed for the FAQ section simultaneously:<br><br>
+        <strong>1. H3 heading wrapper:</strong> Each question button should be wrapped in an <code>&lt;h3 class="faq-h3"&gt;</code> tag. The H3 is CSS-reset to be visually identical to before, but semantically correct for screen readers and Google's heading parser.<br><br>
+        <strong>2. JSON-LD FAQPage schema:</strong> All 7 questions and answers should be declared in a <code>FAQPage</code> JSON-LD block in <code>&lt;head&gt;</code>, making them eligible for Google's expandable FAQ rich results in SERPs.<br><br>
+        <strong>3. itemprop microdata:</strong> The HTML accordion should also carry <code>itemscope</code> / <code>itemprop</code> attributes (redundant reinforcement of the JSON-LD, belt-and-braces approach).<br><br>
+        <strong>4. aria-expanded:</strong> The button's <code>aria-expanded</code> attribute should toggle <code>true</code>/<code>false</code> on click, satisfying WCAG 2.1 AA for accordion disclosure widgets.
+      </p>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>FAQ rich result blocks in Google SERPs</li>
+          <li>SERP real estate expansion (up to 10 accordions shown)</li>
+          <li>Zero-click answer capture for MOQ / delivery Qs</li>
+          <li>Screen reader ARIA compliance</li>
+        </ul>
+      </div>
+      <div class="ref-links">
+        <a href="https://developers.google.com/search/docs/appearance/structured-data/faqpage" target="_blank">Google: FAQPage structured data guide</a>
+        <a href="https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/" target="_blank">WAI-ARIA: Disclosure (accordion) pattern</a>
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Current</span>
+          <span class="panel-file">current — button only, no schema, no aria-expanded</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del"><span class="hl-com">&lt;!-- No FAQPage JSON-LD in &lt;head&gt; --&gt;</span>
+<span class="hl-com">&lt;!-- No itemprop microdata --&gt;</span>
+<span class="hl-com">&lt;!-- No H3 wrapping --&gt;</span>
+<span class="hl-com">&lt;!-- No aria-expanded --&gt;</span>
+
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"faq-item"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-str">"faq-q"</span>
+    <span class="hl-attr">onclick</span>=<span class="hl-str">"toggleFaq(0)"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;span&gt;</span>
+      What is the difference between
+      single-sided and double-sided printing?
+    <span class="hl-tag">&lt;/span&gt;</span>
+    <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-str">"faq-arrow"</span><span class="hl-tag">&gt;</span>▼<span class="hl-tag">&lt;/span&gt;</span>
+  <span class="hl-tag">&lt;/button&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"faq-a"</span> <span class="hl-attr">id</span>=<span class="hl-str">"faq0"</span><span class="hl-tag">&gt;</span>
+    Single-sided printing applies...
+  <span class="hl-tag">&lt;/div&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Proposed</span>
+          <span class="panel-file">lanyard_product_page.html — H3 + itemprop + aria</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new"><span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"faq-item"</span>
+  <span class="hl-attr">itemscope</span>
+  <span class="hl-attr">itemprop</span>=<span class="hl-str">"mainEntity"</span>
+  <span class="hl-attr">itemtype</span>=<span class="hl-str">"https://schema.org/Question"</span><span class="hl-tag">&gt;</span>
+
+  <span class="hl-com">&lt;!-- H3 wraps button: semantic heading,
+       visually reset via CSS --&gt;</span>
+  <span class="hl-tag">&lt;h3</span> <span class="hl-attr">class</span>=<span class="hl-str">"faq-h3"</span>
+    <span class="hl-attr">itemprop</span>=<span class="hl-str">"name"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-str">"faq-q"</span>
+      <span class="hl-attr">onclick</span>=<span class="hl-str">"toggleFaq(0)"</span>
+      <span class="hl-attr">aria-expanded</span>=<span class="hl-str">"false"</span>
+      <span class="hl-attr">aria-controls</span>=<span class="hl-str">"faq0"</span><span class="hl-tag">&gt;</span>
+      What is the difference between
+      single-sided and double-sided printing?
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-str">"faq-arrow"</span>
+        <span class="hl-attr">aria-hidden</span>=<span class="hl-str">"true"</span><span class="hl-tag">&gt;</span>▼<span class="hl-tag">&lt;/span&gt;</span>
+    <span class="hl-tag">&lt;/button&gt;</span>
+  <span class="hl-tag">&lt;/h3&gt;</span>
+
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"faq-a"</span> <span class="hl-attr">id</span>=<span class="hl-str">"faq0"</span>
+    <span class="hl-attr">role</span>=<span class="hl-str">"region"</span>
+    <span class="hl-attr">itemscope</span>
+    <span class="hl-attr">itemprop</span>=<span class="hl-str">"acceptedAnswer"</span>
+    <span class="hl-attr">itemtype</span>=<span class="hl-str">"https://schema.org/Answer"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;span</span> <span class="hl-attr">itemprop</span>=<span class="hl-str">"text"</span><span class="hl-tag">&gt;</span>
+      Single-sided printing applies...
+    <span class="hl-tag">&lt;/span&gt;</span>
+  <span class="hl-tag">&lt;/div&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></span>
+
+<span class="hl-com">/* JS: aria-expanded toggles on open/close */</span>
+<span class="hl-new">function toggleFaq(i) {
+  const a   = document.getElementById('faq'+i);
+  const btn = a.previousElementSibling
+                .querySelector('button');
+  const isOpen = a.classList.contains('open');
+  a.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded',
+    String(!isOpen));
+}</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 11: MOBILE-FIRST LAYOUT   -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s11" class="section-head">
+    <div class="section-num">11</div>
+    <h2>Mobile-First Responsive Layout — 5-Breakpoint System + Sticky Order Bar</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-ux">Mobile-First</div>
+      <div class="change-tag tag-seo">Google Mobile Indexing</div>
+      <div class="change-title">Single desktop breakpoint → 5-breakpoint system with bottom sticky order card</div>
+      <p class="change-desc">
+        Google's primary indexing model is <strong>mobile-first</strong>: the mobile version of a page is what Google crawls, renders, and ranks. The previous implementation had a single <code>@media (max-width: 900px)</code> block that simply stacked the desktop layout — no optimisation for actual mobile devices.<br><br>
+        The new system implements <strong>5 explicit breakpoints</strong>:
+      </p>
+      <div style="background:#0d1117;border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:11.5px;color:#e6edf3;line-height:1.9;margin-bottom:12px;">
+        <span style="color:#79c0ff;">0–479px</span>   <span style="color:#8b949e;">// Small mobile: S21, iPhone SE</span><br>
+        <span style="color:#79c0ff;">480–767px</span>  <span style="color:#8b949e;">// Mobile: iPhone 14, Pixel 7</span><br>
+        <span style="color:#79c0ff;">768–899px</span>  <span style="color:#8b949e;">// Tablet: iPad Mini, Surface</span><br>
+        <span style="color:#79c0ff;">900–1099px</span> <span style="color:#8b949e;">// Small desktop: 13" laptop</span><br>
+        <span style="color:#79c0ff;">1100px+</span>    <span style="color:#8b949e;">// Desktop: base styles apply</span>
+      </div>
+      <p class="change-desc">
+        On mobile (0–767px), the sticky left panel is <strong>de-stickied and pushed to top</strong>, serving product information first — matching Google's mobile-first crawl order. The right scrollable content follows below.<br><br>
+        A <strong>bottom sticky order bar</strong> is injected at <code>position: fixed; bottom: 0</code> and shown <em>only</em> on mobile/small mobile. It contains: product thumbnail, product name, units + size selected, live unit price, and a prominent Order Now button. It uses <code>env(safe-area-inset-bottom)</code> for iPhone notch/home indicator clearance.
+      </p>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Google Mobile-First Index crawl quality</li>
+          <li>Mobile CTA visibility (always-visible sticky bar)</li>
+          <li>Core Web Vitals: no CLS from sticky bar (fixed pos)</li>
+          <li>Add-to-cart rate from mobile users</li>
+          <li>iPhone / Android safe-area compliance</li>
+        </ul>
+      </div>
+      <div class="warning-box">
+        <strong>WordPress integration note</strong>
+        Ensure the theme wrapper does not apply <code>overflow: hidden</code> or <code>overflow: clip</code> on any ancestor of <code>.sticky-panel</code> — this breaks CSS sticky. Also confirm the theme does not already inject a mobile sticky bar that would conflict.
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Before</span>
+          <span class="panel-file">single breakpoint — no mobile bar</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del"><span class="hl-com">/* Single breakpoint only */</span>
+<span class="hl-tag">@media (max-width: 900px)</span> {
+  <span class="hl-attr">.product-layout</span> { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.sticky-panel</span>   { <span class="hl-val">position: static; height: auto</span>; }
+  <span class="hl-attr">.image-viewer</span>   { <span class="hl-val">flex-direction: column-reverse</span>; }
+  <span class="hl-attr">.thumb-strip</span>    { <span class="hl-val">flex-direction: row; overflow-x: auto</span>; }
+  <span class="hl-attr">.features-grid</span>, <span class="hl-attr">.testi-grid</span>,
+  <span class="hl-attr">.why-grid</span>       { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.content-section</span>{ <span class="hl-val">padding: 36px 24px</span>; }
+}
+
+<span class="hl-com">/* No mobile sticky bar */</span>
+<span class="hl-com">/* No safe-area handling */</span>
+<span class="hl-com">/* No touch targets optimised */</span>
+<span class="hl-com">/* No small mobile (< 480px) rules */</span>
+<span class="hl-com">/* No tablet (768-899px) rules */</span></span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">After</span>
+          <span class="panel-file">index.html — 5-breakpoint + mobile sticky bar</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new"><span class="hl-com">/* Mobile sticky bar — hidden on desktop */</span>
+<span class="hl-tag">.mobile-sticky-bar</span> {
+  <span class="hl-attr">display</span>: <span class="hl-val">none</span>;
+  <span class="hl-attr">position</span>: <span class="hl-val">fixed</span>;
+  <span class="hl-attr">bottom</span>: <span class="hl-val">0</span>; <span class="hl-attr">left</span>: <span class="hl-val">0</span>; <span class="hl-attr">right</span>: <span class="hl-val">0</span>;
+  <span class="hl-attr">z-index</span>: <span class="hl-val">200</span>;
+  <span class="hl-attr">padding-bottom</span>: <span class="hl-val">calc(10px + env(safe-area-inset-bottom))</span>;
+  <span class="hl-com">/* ↑ iPhone home indicator clearance */</span>
+}
+
+<span class="hl-com">/* Small mobile: 0–479px */</span>
+<span class="hl-tag">@media (max-width: 479px)</span> {
+  <span class="hl-attr">.sticky-panel</span>  { <span class="hl-val">position: static; border-bottom: 1px solid var(--border)</span>; }
+  <span class="hl-attr">.image-viewer</span>  { <span class="hl-val">flex-direction: column</span>; }
+  <span class="hl-attr">.content-section</span>{ <span class="hl-val">padding: 28px 14px</span>; }
+  <span class="hl-attr">.mobile-sticky-bar</span> { <span class="hl-val">display: block</span>; }
+}
+
+<span class="hl-com">/* Mobile: 480–767px */</span>
+<span class="hl-tag">@media (min-width: 480px) and (max-width: 767px)</span> {
+  <span class="hl-attr">.image-viewer</span> { <span class="hl-val">flex-direction: row</span>; }
+  <span class="hl-attr">.thumb-strip</span>  { <span class="hl-val">flex-direction: column</span>; }
+  <span class="hl-attr">.mobile-sticky-bar</span> { <span class="hl-val">display: block</span>; }
+}
+
+<span class="hl-com">/* Tablet 768-899: no bar, product visible */</span>
+<span class="hl-tag">@media (min-width: 768px) and (max-width: 899px)</span> {
+  <span class="hl-attr">.mobile-sticky-bar</span> { <span class="hl-val">display: none</span>; }
+  <span class="hl-attr">.features-grid</span>  { <span class="hl-val">grid-template-columns: repeat(2, 1fr)</span>; }
+}
+
+<span class="hl-com">/* Desktop 1100+: base styles */</span>
+<span class="hl-tag">@media (min-width: 1100px)</span> {
+  <span class="hl-attr">.mobile-sticky-bar</span> { <span class="hl-val">display: none</span>; }
+}</span>
+
+<span class="hl-com">/* Sticky bar HTML (fixed bottom, mobile only) */</span>
+<span class="hl-new"><span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"mobile-sticky-bar"</span>
+  <span class="hl-attr">id</span>=<span class="hl-str">"mobileStickyBar"</span>
+  <span class="hl-attr">role</span>=<span class="hl-str">"complementary"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-inner"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;img</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-img"</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbImg"</span><span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-info"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;div</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbName"</span><span class="hl-tag">&gt;</span>Polyester Lanyard...<span class="hl-tag">&lt;/div&gt;</span>
+      <span class="hl-tag">&lt;div</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbMeta"</span><span class="hl-tag">&gt;</span>Min. 50 units · 1cm · Single<span class="hl-tag">&lt;/div&gt;</span>
+    <span class="hl-tag">&lt;/div&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-price"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbPrice"</span><span class="hl-tag">&gt;</span>$2.44<span class="hl-tag">&lt;/span&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-price-sub"</span><span class="hl-tag">&gt;</span>per unit<span class="hl-tag">&lt;/span&gt;</span>
+    <span class="hl-tag">&lt;/div&gt;</span>
+    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-btn"</span><span class="hl-tag">&gt;</span>Order Now<span class="hl-tag">&lt;/button&gt;</span>
+  <span class="hl-tag">&lt;/div&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></span>
+
+<span class="hl-com">/* JS: bar syncs live with sidebar state */</span>
+<span class="hl-new">updateSidebarPrice = (function(orig) {
+  return function() {
+    orig();
+    updateMobileStickyBar(); <span class="hl-com">// sync bar</span>
+  };
+})(updateSidebarPrice);</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 12: DEV NOTES RESPONSIVE  -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s12" class="section-head">
+    <div class="section-num">12</div>
+    <h2>Developer Notes Page — Made Fully Responsive (Mobile-First)</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-ux">Dev Reference</div>
+      <div class="change-title">Desktop-only fixed grid → 4-breakpoint responsive dev notes layout</div>
+      <p class="change-desc">
+        The developer notes page itself was built desktop-first with a fixed <code>340px</code> left column on each change card. On mobile, it was unreadable — the code panels overflowed, the TOC was cramped, and the header layout broke on narrow screens.<br><br>
+        The updated <code>dev-notes.html</code> now uses <strong>4 responsive breakpoints</strong>:
+      </p>
+      <div style="background:#0d1117;border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:11.5px;color:#e6edf3;line-height:1.9;margin-bottom:12px;">
+        <span style="color:#79c0ff;">0–599px</span>   <span style="color:#8b949e;">// Mobile: single col, small pre, hide panel-file</span><br>
+        <span style="color:#79c0ff;">600–899px</span>  <span style="color:#8b949e;">// Tablet: single col, slightly larger</span><br>
+        <span style="color:#79c0ff;">900–1099px</span> <span style="color:#8b949e;">// Small desktop: 280px left col</span><br>
+        <span style="color:#79c0ff;">1100px+</span>    <span style="color:#8b949e;">// Desktop: full 340px left col</span>
+      </div>
+      <p class="change-desc">
+        On mobile, the change cards stack vertically (notes above, code panels below). The TOC bar scrolls horizontally. The summary table hides the less-critical "Google Rich Results Impact" column to fit on narrow screens. Code panels reduce font size to 10.5px and max-height to 320px.
+      </p>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Dev/stakeholder review on mobile devices</li>
+          <li>Tablet-friendly during client meetings</li>
+          <li>Readable code diffs on 375px screens</li>
+        </ul>
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Before</span>
+          <span class="panel-file">dev-notes.html — desktop-only</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del"><span class="hl-com">/* Single breakpoint, no fine control */</span>
+<span class="hl-tag">@media (max-width: 900px)</span> {
+  <span class="hl-attr">.change-block</span> { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.toc-bar</span>      { <span class="hl-val">padding: 10px 16px</span>; }
+  <span class="hl-attr">.content</span>      { <span class="hl-val">padding: 20px 16px 60px</span>; }
+  <span class="hl-attr">.doc-header</span>   { <span class="hl-val">padding: 20px 16px</span>; }
+}
+<span class="hl-com">/* pre font too large on mobile */</span>
+<span class="hl-com">/* summary table overflows on 375px */</span>
+<span class="hl-com">/* TOC wraps messily on small screens */</span>
+<span class="hl-com">/* No safe column hiding on narrow views */</span></span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">After</span>
+          <span class="panel-file">dev-notes.html — 4-breakpoint responsive</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new"><span class="hl-com">/* Mobile: 0–599px */</span>
+<span class="hl-tag">@media (max-width: 599px)</span> {
+  <span class="hl-attr">.doc-header h1</span>     { <span class="hl-val">font-size: 16px</span>; }
+  <span class="hl-attr">.toc-bar</span>           { <span class="hl-val">overflow-x: auto; flex-wrap: nowrap</span>; }
+  <span class="hl-attr">.toc-link</span>          { <span class="hl-val">flex-shrink: 0</span>; }
+  <span class="hl-attr">.change-block</span>      { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.change-notes</span>      { <span class="hl-val">border-right: none; border-bottom: ...</span>; }
+  <span class="hl-attr">pre</span>                { <span class="hl-val">font-size: 10.5px; max-height: 320px</span>; }
+  <span class="hl-attr">.panel-file</span>        { <span class="hl-val">display: none</span>; }
+  <span class="hl-attr">.panel-dots</span>        { <span class="hl-val">display: none</span>; }
+  <span class="hl-com">/* Hide Google Impact col (too wide) */</span>
+  <span class="hl-attr">.summary-table th:nth-child(4)</span>,
+  <span class="hl-attr">.summary-table td:nth-child(4)</span> {
+    <span class="hl-val">display: none</span>;
+  }
+}
+
+<span class="hl-com">/* Tablet: 600–899px */</span>
+<span class="hl-tag">@media (min-width: 600px) and (max-width: 899px)</span> {
+  <span class="hl-attr">.change-block</span>      { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">pre</span>                { <span class="hl-val">font-size: 11px; max-height: 360px</span>; }
+  <span class="hl-attr">.toc-bar</span>           { <span class="hl-val">overflow-x: auto; flex-wrap: nowrap</span>; }
+}
+
+<span class="hl-com">/* Small desktop: 900–1099px */</span>
+<span class="hl-tag">@media (min-width: 900px) and (max-width: 1099px)</span> {
+  <span class="hl-attr">.change-block</span>      { <span class="hl-val">grid-template-columns: 280px 1fr</span>; }
+}
+
+<span class="hl-com">/* Desktop 1100+: base 340px left col */</span></span></pre>
+      </div>
+    </div>
+  </div>
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 11: MOBILE-FIRST RESPONSIVE + STICKY ORDER BAR -->
+  <!-- ══════════════════════════════════ -->
+  <div id="s11" class="section-head">
+    <div class="section-num">11</div>
+    <h2>Mobile-First Design — Responsive Breakpoints + Sticky Order Bar</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-ux">Mobile-First / CRO</div>
+      <div class="change-tag tag-seo">Google Mobile-First Indexing</div>
+      <div class="change-title">Desktop-only layout → 4-breakpoint mobile-first responsive system with live sticky CTA bar</div>
+      <p class="change-desc">
+        Google switched to <strong>mobile-first indexing</strong> — the mobile version of a page is now what Google crawls, indexes, and uses for ranking. The original page had no meaningful mobile layout: it was a desktop-only single-column design that simply reflowed awkwardly on small screens.<br><br>
+        The new implementation is <em>built mobile-first</em> — all base CSS targets mobile, with progressive enhancement via <code>min-width</code> media queries upward. Four breakpoints are defined:<br><br>
+        <strong>● Small mobile (0–479px):</strong> Single column, product panel stacks on top, content scrolls below, thumbnails go horizontal, sticky order bar fixed at bottom.<br><br>
+        <strong>● Mobile (480–767px):</strong> Same stack order, slightly more breathing room, Order Now button shown in header nav, vertical thumb strip restored.<br><br>
+        <strong>● Tablet (768–899px):</strong> Single column continues, image viewer returns to horizontal layout, 2-column feature/why grids, no sticky bar (product still visible on scroll).<br><br>
+        <strong>● Small desktop (900–1099px):</strong> Sticky panel narrows to 380px, desktop grid restores.<br><br>
+        <strong>● Full desktop (1100px+):</strong> Full 520px sticky panel, all grids at maximum columns.
+      </p>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Google mobile crawl content parity (indexing signal)</li>
+          <li>Core Web Vitals: CLS reduced (no layout shift on mobile)</li>
+          <li>Mobile conversion rate (sticky bar always accessible)</li>
+          <li>Bounce rate: mobile visitors see product first, not nav</li>
+          <li>Page Experience score (touch targets ≥44px, no zoom needed)</li>
+        </ul>
+      </div>
+      <div class="warning-box">
+        <strong>Safe area support</strong>
+        The sticky bar uses <code>env(safe-area-inset-bottom)</code> for iPhone home indicator clearance. Ensure the WordPress theme wrapping element does not clip this with <code>overflow: hidden</code>. Also verify that WooCommerce's own sticky elements (if any) don't z-index conflict with <code>z-index: 200</code> on the bar.
+      </div>
+      <div class="ref-links">
+        <a href="https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-first-indexing" target="_blank">Google: Mobile-First Indexing guide</a>
+        <a href="https://web.dev/articles/mobile-accessibility" target="_blank">web.dev: Mobile accessibility best practices</a>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/env" target="_blank">MDN: env() — safe-area-inset-bottom</a>
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Before</span>
+          <span class="panel-file">original — desktop-only, no responsive breakpoints</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del"><span class="hl-com">/* Single breakpoint, desktop assumed */</span>
+<span class="hl-tag">@media (max-width: 900px)</span> {
+  <span class="hl-attr">.product-layout</span> { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.sticky-panel</span>   { <span class="hl-val">position: static; height: auto</span>; }
+  <span class="hl-attr">.features-grid</span>  { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.testi-grid</span>     { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.why-grid</span>       { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.related-grid</span>   { <span class="hl-val">grid-template-columns: repeat(2,1fr)</span>; }
+}
+<span class="hl-com">/* No mobile sticky bar */</span>
+<span class="hl-com">/* No safe-area support */</span>
+<span class="hl-com">/* No touch target optimisation */</span>
+<span class="hl-com">/* No thumb strip responsive handling */</span>
+<span class="hl-com">/* No topbar/header mobile adaptation */</span></span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">After</span>
+          <span class="panel-file">lanyard_product_page.html — 4-tier mobile-first breakpoints</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new"><span class="hl-com">/* ── SMALL MOBILE: 0–479px ── */</span>
+<span class="hl-tag">@media (max-width: 479px)</span> {
+  <span class="hl-com">/* Product panel: on TOP, not sidebar */</span>
+  <span class="hl-attr">.product-layout</span>  { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.sticky-panel</span>    { <span class="hl-val">position: static; height: auto</span>;
+                       <span class="hl-val">padding: 16px 14px 20px</span>;
+                       <span class="hl-val">border-right: none</span>;
+                       <span class="hl-val">border-bottom: 1px solid var(--border)</span>; }
+  <span class="hl-com">/* Thumbs: horizontal scroll strip below image */</span>
+  <span class="hl-attr">.image-viewer</span>    { <span class="hl-val">flex-direction: column</span>; }
+  <span class="hl-attr">.thumb-strip</span>     { <span class="hl-val">flex-direction: row; overflow-x: auto</span>; }
+  <span class="hl-attr">.thumb</span>           { <span class="hl-val">width: 54px; height: 54px; flex-shrink: 0</span>; }
+  <span class="hl-com">/* Single-col all grids */</span>
+  <span class="hl-attr">.features-grid, .steps, .testi-grid,
+  .why-grid, .related-grid</span>  { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-com">/* Mobile sticky bar: visible */</span>
+  <span class="hl-attr">.mobile-sticky-bar</span> { <span class="hl-val">display: block</span>; }
+  <span class="hl-attr">.page-footer</span>      { <span class="hl-val">padding-bottom:
+    calc(80px + env(safe-area-inset-bottom))</span>; }
+}
+
+<span class="hl-com">/* ── MOBILE: 480–767px ── */</span>
+<span class="hl-tag">@media (min-width: 480px) and (max-width: 767px)</span> {
+  <span class="hl-attr">.product-layout</span>  { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.sticky-panel</span>    { <span class="hl-val">position: static; height: auto</span>; }
+  <span class="hl-attr">.image-viewer</span>    { <span class="hl-val">flex-direction: row</span>; } <span class="hl-com">/* restore */</span>
+  <span class="hl-attr">.thumb-strip</span>     { <span class="hl-val">flex-direction: column</span>; }
+  <span class="hl-attr">.header-nav .nav-btn:not(.primary)</span>
+                   { <span class="hl-val">display: none</span>; } <span class="hl-com">/* Order Now only */</span>
+  <span class="hl-attr">.mobile-sticky-bar</span> { <span class="hl-val">display: block</span>; }
+}
+
+<span class="hl-com">/* ── TABLET: 768–899px ── */</span>
+<span class="hl-tag">@media (min-width: 768px) and (max-width: 899px)</span> {
+  <span class="hl-attr">.product-layout</span>  { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.sticky-panel</span>    { <span class="hl-val">position: static; height: auto</span>; }
+  <span class="hl-attr">.features-grid</span>   { <span class="hl-val">grid-template-columns: repeat(2,1fr)</span>; }
+  <span class="hl-attr">.mobile-sticky-bar</span> { <span class="hl-val">display: none</span>; } <span class="hl-com">/* not needed */</span>
+}
+
+<span class="hl-com">/* ── DESKTOP: 900px+ (base 520px sticky panel) ── */</span>
+<span class="hl-tag">@media (min-width: 900px) and (max-width: 1099px)</span> {
+  <span class="hl-attr">.product-layout</span>  { <span class="hl-val">grid-template-columns: 380px 1fr</span>; }
+  <span class="hl-attr">.mobile-sticky-bar</span> { <span class="hl-val">display: none</span>; }
+}</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE STICKY BAR DETAIL CARD -->
+  <div class="change-block" style="margin-top:0;">
+    <div class="change-notes">
+      <div class="change-tag tag-ux">Mobile Sticky CTA Bar</div>
+      <div class="change-title">Fixed bottom order bar — image · name · units · price · Order Now button</div>
+      <p class="change-desc">
+        On mobile and small mobile viewports, a fixed bottom bar appears that gives buyers instant access to the order CTA at all times — even when they are reading features, testimonials, or the FAQ section far down the page. This eliminates the need to scroll all the way back to the top to place an order.<br><br>
+        The bar contains four elements in a single row:<br><br>
+        <strong>① Product thumbnail</strong> — 46×46px image that updates live when the user switches colour or image.<br><br>
+        <strong>② Item name + meta</strong> — truncated product title and a live-updating meta line showing current quantity selected, width size, and print side.<br><br>
+        <strong>③ Live unit price</strong> — updates in real-time as the sidebar calculator state changes. Shows price per unit in the currently selected configuration.<br><br>
+        <strong>④ Order Now button</strong> — large tap target (min 44px height, bold text), green background, opens the live product order page in a new tab.<br><br>
+        All four elements sync with the sidebar calculator via JS function patching. When the user changes width, side, or quantity in the sidebar, <code>updateMobileStickyBar()</code> is called automatically.
+      </p>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Mobile add-to-cart rate (CTA never out of sight)</li>
+          <li>Reduced scroll-back friction for mobile buyers</li>
+          <li>iOS safe area: no content hidden by home indicator</li>
+          <li>Thumb-friendly 44px+ tap targets (WCAG 2.5.5)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Before</span>
+          <span class="panel-file">original — no mobile sticky bar existed</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del"><span class="hl-com">&lt;!-- No mobile sticky bar.
+     On mobile, the Order Now button
+     was only accessible by scrolling
+     all the way back to the top of
+     the product panel.
+     No CTA visible while reading
+     features / testimonials / FAQ. --&gt;</span></span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">After</span>
+          <span class="panel-file">lanyard_product_page.html — mobile sticky bar HTML + JS sync</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new"><span class="hl-com">&lt;!-- Fixed bottom bar: mobile only (≤767px) --&gt;</span>
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"mobile-sticky-bar"</span>
+  <span class="hl-attr">id</span>=<span class="hl-str">"mobileStickyBar"</span>
+  <span class="hl-attr">role</span>=<span class="hl-str">"complementary"</span>
+  <span class="hl-attr">aria-label</span>=<span class="hl-str">"Quick order summary"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-inner"</span><span class="hl-tag">&gt;</span>
+
+    <span class="hl-com">&lt;!-- ① Product image (syncs w/ gallery) --&gt;</span>
+    <span class="hl-tag">&lt;img</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-img"</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbImg"</span>
+      <span class="hl-attr">src</span>=<span class="hl-str">"...polyester-lanyard-...8605.jpg"</span>
+      <span class="hl-attr">alt</span>=<span class="hl-str">"Polyester Lanyard — quick order"</span>
+      <span class="hl-attr">loading</span>=<span class="hl-str">"lazy"</span><span class="hl-tag">/&gt;</span>
+
+    <span class="hl-com">&lt;!-- ② Item name + live meta --&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-info"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-name"</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbName"</span><span class="hl-tag">&gt;</span>
+        Polyester Lanyard (Silk Screen Printing)
+      <span class="hl-tag">&lt;/div&gt;</span>
+      <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-meta"</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbMeta"</span><span class="hl-tag">&gt;</span>
+        Min. 50 units · 1cm · Single-Sided
+      <span class="hl-tag">&lt;/div&gt;</span>
+    <span class="hl-tag">&lt;/div&gt;</span>
+
+    <span class="hl-com">&lt;!-- ③ Live unit price --&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-price"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbPrice"</span><span class="hl-tag">&gt;</span>$2.44<span class="hl-tag">&lt;/span&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-price-sub"</span><span class="hl-tag">&gt;</span>per unit<span class="hl-tag">&lt;/span&gt;</span>
+    <span class="hl-tag">&lt;/div&gt;</span>
+
+    <span class="hl-com">&lt;!-- ④ Primary CTA (large, bold) --&gt;</span>
+    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-btn"</span>
+      <span class="hl-attr">onclick</span>=<span class="hl-str">"window.open('...product/...')"</span>
+      <span class="hl-attr">aria-label</span>=<span class="hl-str">"Order Polyester Lanyard now"</span><span class="hl-tag">&gt;</span>
+      Order Now
+    <span class="hl-tag">&lt;/button&gt;</span>
+  <span class="hl-tag">&lt;/div&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span>
+
+<span class="hl-com">/* JS: syncs bar with sidebar state */</span>
+function updateMobileStickyBar() {
+  const qty   = parseInt(sidebarQty.value) || 50;
+  const price = getPrice(qty, sbSize, sbSide);
+  msbMeta.textContent  =
+    qty + ' units · ' + sbSize + 'cm · '
+    + (sbSide==='s'?'Single':'Double');
+  msbPrice.textContent = '$' + price.toFixed(2);
+  <span class="hl-com">/* Patch updateSidebarPrice, selectSidebarSize,
+     switchImg to call this on every change */</span>
+}</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEV NOTES RESPONSIVE CARD -->
+  <div class="change-block" style="margin-top:0;">
+    <div class="change-notes">
+      <div class="change-tag tag-ux">Dev Notes Page — Responsive</div>
+      <div class="change-title">Dev notes: single fixed-width desktop layout → 3-tier responsive document</div>
+      <p class="change-desc">
+        The developer notes page itself was made fully responsive across three breakpoints so it is readable on any device — including mobile phones used during site review or client walkthroughs.<br><br>
+        <strong>Mobile (≤599px):</strong> Change cards collapse to single column. Notes panel stacks above code panels. Code font reduced to 10.5px. "Google Impact" column hidden from summary table (too wide). File path and dot labels hidden in code panel headers. TOC scrolls horizontally without wrapping.<br><br>
+        <strong>Tablet (600–899px):</strong> Cards still single column but with more padding. Code font 11px. Summary table shows all columns.<br><br>
+        <strong>Small desktop (900–1099px):</strong> Cards switch to 280px notes + flexible code panel. Full two-column layout restored.<br><br>
+        <strong>Large desktop (1100px+):</strong> Full 340px notes column — the design intent baseline.
+      </p>
+      <div class="impact-box">
+        <div class="impact-label">Expected improvements</div>
+        <ul>
+          <li>Readable on phone during stakeholder review</li>
+          <li>Back-to-product button visible on all screen sizes</li>
+          <li>TOC navigable on mobile without horizontal overflow</li>
+        </ul>
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Before</span>
+          <span class="panel-file">dev-notes.html — single breakpoint only</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-del"><span class="hl-tag">@media (max-width: 900px)</span> {
+  <span class="hl-com">/* Single catch-all breakpoint */</span>
+  <span class="hl-attr">.change-block</span>  { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.change-notes</span>  { <span class="hl-val">border-right: none;
+                   border-bottom: 1px solid var(--border)</span>; }
+  <span class="hl-attr">.toc-bar</span>       { <span class="hl-val">padding: 10px 16px</span>; }
+  <span class="hl-attr">.content</span>       { <span class="hl-val">padding: 20px 16px 60px</span>; }
+  <span class="hl-attr">.doc-header</span>    { <span class="hl-val">padding: 20px 16px</span>; }
+  <span class="hl-com">/* No table column hiding */</span>
+  <span class="hl-com">/* No code font reduction */</span>
+  <span class="hl-com">/* No file/dot header hiding */</span>
+  <span class="hl-com">/* TOC wraps (causes overflow) */</span>
+}</span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">After</span>
+          <span class="panel-file">dev-notes.html — 4-tier responsive breakpoints</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new"><span class="hl-com">/* MOBILE: 0–599px */</span>
+<span class="hl-tag">@media (max-width: 599px)</span> {
+  <span class="hl-attr">.change-block</span>  { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.toc-bar</span>       { <span class="hl-val">overflow-x: auto; flex-wrap: nowrap</span>; }
+  <span class="hl-attr">.toc-link</span>      { <span class="hl-val">flex-shrink: 0</span>; }
+  <span class="hl-attr">pre</span>            { <span class="hl-val">font-size: 10.5px; max-height: 320px</span>; }
+  <span class="hl-com">/* Hide table col 4 (Google Impact) */</span>
+  <span class="hl-attr">.summary-table th:nth-child(4),
+  .summary-table td:nth-child(4)</span>
+                 { <span class="hl-val">display: none</span>; }
+  <span class="hl-com">/* Hide code panel decorations */</span>
+  <span class="hl-attr">.panel-file, .panel-dots</span>
+                 { <span class="hl-val">display: none</span>; }
+  <span class="hl-attr">.doc-header h1</span>{ <span class="hl-val">font-size: 16px</span>; }
+}
+
+<span class="hl-com">/* TABLET: 600–899px */</span>
+<span class="hl-tag">@media (min-width: 600px) and (max-width: 899px)</span> {
+  <span class="hl-attr">.change-block</span>  { <span class="hl-val">grid-template-columns: 1fr</span>; }
+  <span class="hl-attr">.toc-bar</span>       { <span class="hl-val">overflow-x: auto; flex-wrap: nowrap</span>; }
+  <span class="hl-attr">pre</span>            { <span class="hl-val">font-size: 11px; max-height: 360px</span>; }
+}
+
+<span class="hl-com">/* SMALL DESKTOP: 900–1099px */</span>
+<span class="hl-tag">@media (min-width: 900px) and (max-width: 1099px)</span> {
+  <span class="hl-attr">.change-block</span>  { <span class="hl-val">grid-template-columns: 280px 1fr</span>; }
+}
+
+<span class="hl-com">/* LARGE DESKTOP: 1100px+ — 340px notes col */</span>
+<span class="hl-com">/* Base styles — no override needed */</span></span></pre>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- ── FOOTER ── -->
+<div class="doc-footer">
+  <span>Badge-A-Minit — Lanyard Page Revamp Developer Notes · Girish Kumar | E-Commerce SEO Manager · April 2026</span>
+  <span>Proposed Recommendations · Not yet implemented · Scope: badge-a-minit.com.au/products/lanyards</span>
+</div>
+
+</body>
+</html>
