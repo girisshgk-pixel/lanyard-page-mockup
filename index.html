@@ -677,24 +677,6 @@ body {
 .logo-sub { font-size: 10px; color: var(--text-muted); display: block; }
 .header-contact { font-size: 13px; color: var(--text-muted); text-align: right; }
 .header-contact strong { display: block; color: var(--green-dark); font-size: 15px; }
-.dev-note-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 5px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--green-mid);
-  text-decoration: none;
-  letter-spacing: 0.2px;
-  border-bottom: 1px dashed var(--green-border);
-  padding-bottom: 1px;
-  transition: color 0.2s, border-color 0.2s;
-}
-.dev-note-link:hover {
-  color: var(--green-dark);
-  border-color: var(--green-mid);
-}
 .header-nav { display: flex; gap: 6px; }
 .nav-btn {
   background: none; border: 1px solid var(--border); border-radius: 6px;
@@ -715,10 +697,50 @@ body {
   color: var(--text-muted);
   background: var(--white);
   border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.breadcrumb-trail {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
 }
 .breadcrumb a { color: var(--green-mid); text-decoration: none; }
 .breadcrumb a:hover { text-decoration: underline; }
-.breadcrumb span { color: var(--text-muted); margin: 0 5px; }
+.breadcrumb span[aria-hidden] { color: var(--text-muted); }
+.breadcrumb span[aria-current] { color: var(--text-muted); }
+
+/* Dev note link — lives in breadcrumb bar */
+.dev-note-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green-mid);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+.dev-note-link:hover { color: var(--green-dark); }
+.dev-note-badge {
+  display: inline-block;
+  background: var(--amber-pale, #fef3c7);
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 20px;
+  line-height: 1.6;
+}
 
 /* ── PRODUCT LAYOUT ── */
 .product-layout {
@@ -1415,6 +1437,8 @@ body {
   .header-contact strong { font-size: 13px; }
   .dev-note-link { font-size: 10px; }
   .breadcrumb { padding: 8px 14px; font-size: 11px; }
+  .dev-note-link { font-size: 10px; }
+  .dev-note-badge { display: none; } /* hide badge on tiny screens */
 
   /* Product layout: single column, panel on top */
   .product-layout { grid-template-columns: 1fr; }
@@ -1584,20 +1608,27 @@ body {
   <div class="header-contact">
     <strong>(08) 8363 1655</strong>
     Mon–Fri · 9am–5pm ACST
-    <a href="./dev-notes.html" class="dev-note-link" target="_blank" rel="noopener" aria-label="Open developer implementation notes in a new tab">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-      Developer Implementation Notes
-    </a>
   </div>
 </header>
 
 <!-- BREADCRUMB -->
-<div class="breadcrumb">
-  <a href="https://badge-a-minit.com.au">Home</a>
-  <span>/</span>
-  <a href="https://badge-a-minit.com.au/products/lanyards">Lanyards</a>
-  <span>/</span>
-  Polyester Lanyard (Silk Screen Printing)
+<div class="breadcrumb" role="navigation" aria-label="Breadcrumb">
+  <div class="breadcrumb-trail">
+    <a href="https://badge-a-minit.com.au">Home</a>
+    <span aria-hidden="true">/</span>
+    <a href="https://badge-a-minit.com.au/products/lanyards">Lanyards</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">Polyester Lanyard (Silk Screen Printing)</span>
+  </div>
+  <a href="./dev-notes.html"
+     class="dev-note-link"
+     target="_blank"
+     rel="noopener"
+     aria-label="Open developer implementation notes — proposed changes, not yet live">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+    Developer Implementation Notes
+    <span class="dev-note-badge">Proposal</span>
+  </a>
 </div>
 
 <!-- PRODUCT LAYOUT -->
