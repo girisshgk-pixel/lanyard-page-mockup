@@ -202,8 +202,7 @@ FAQ accordion toggles `aria-expanded`. Colour swatches use `role="radio"` + `ari
 ## 📞 Contact
 
 **Girish Kumar** — E-Commerce SEO Manager
-**Agency:** AdsPilot
-**Client:** Badge-A-Minit · 56a Prospect Road, Prospect SA 5082 · (08) 8363 1655
+**Brand:** Badge-A-Minit · 56a Prospect Road, Prospect SA 5082 · (08) 8363 1655
 
 ---
 
