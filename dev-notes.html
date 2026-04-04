@@ -342,7 +342,7 @@ pre::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
 }
 .summary-table tr:last-child td { border-bottom: none; }
 .summary-table tr:nth-child(even) td { background: #f9fef6; }
-.status-fixed  { color: var(--green-mid); font-weight: 700; }
+.status-fixed  { color: var(--green-mid); font-weight: 700; } /* legacy — now maps to status-info */
 .status-warn   { color: var(--amber);     font-weight: 700; }
 .status-info   { color: var(--blue);      font-weight: 700; }
 
@@ -503,6 +503,8 @@ pre::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
   <a class="toc-link" href="#s11">Mobile-First</a>
   <a class="toc-link" href="#s11">Mobile-First</a>
   <a class="toc-link" href="#s12">Dev Notes Responsive</a>
+  <a class="toc-link" href="#s13">URL Strategy</a>
+  <a class="toc-link" href="#s14">Dual-Option Decisions</a>
 </nav>
 
 <div class="content">
@@ -543,13 +545,12 @@ pre::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
       <tr><td>17</td><td>Minimum order updated to 50 units (from 250)</td><td>Content</td><td>Accurate product data; Merchant Centre compliance</td><td class="status-info">Proposed</td></tr>
       <tr><td>18</td><td>Merchant listing: shippingDetails from /shipping-options</td><td>Schema</td><td>Removes optional warning in Rich Results Test</td><td class="status-warn">Pending URL Access</td></tr>
       <tr><td>19</td><td>Merchant listing: returnPolicy from /terms-and-conditions</td><td>Schema</td><td>Removes optional warning in Rich Results Test</td><td class="status-warn">Pending URL Access</td></tr>
-      <tr><td>20</td><td>4-tier mobile-first breakpoints (0–479 / 480–767 / 768–899 / 900+)</td><td>Mobile / SEO</td><td>Google Mobile-First Indexing parity; Core Web Vitals CLS</td><td class="status-fixed">Proposed</td></tr>
-      <tr><td>21</td><td>Mobile sticky order bar — image · name · units · price · Order Now</td><td>Mobile / CRO</td><td>Mobile conversion rate; CTA always visible on scroll</td><td class="status-fixed">Proposed</td></tr>
-      <tr><td>22</td><td>iOS safe-area-inset-bottom on sticky bar</td><td>Mobile</td><td>iPhone home indicator doesn't cover the CTA button</td><td class="status-fixed">Proposed</td></tr>
-      <tr><td>23</td><td>Dev notes page: 3-tier responsive layout</td><td>UX / Docs</td><td>Document readable on mobile during stakeholder review</td><td class="status-fixed">Proposed</td></tr>
-      <tr><td>20</td><td>5-breakpoint mobile-first CSS (0–479 / 480–767 / 768–899 / 900–1099 / 1100+)</td><td>Mobile-First</td><td>Google Mobile-First Index; Core Web Vitals page experience</td><td class="status-fixed">Proposed</td></tr>
-      <tr><td>21</td><td>Mobile sticky order bar — fixed bottom (image + name + qty + price + Order Now)</td><td>Mobile-First / CRO</td><td>Mobile CTA visibility; iOS safe-area inset compliance</td><td class="status-fixed">Proposed</td></tr>
-      <tr><td>22</td><td>Developer notes page (dev-notes.html) made fully responsive — 4 breakpoints</td><td>Dev Reference</td><td>Readable on phone/tablet for stakeholder and developer review</td><td class="status-fixed">Proposed</td></tr>
+
+      <tr><td>20</td><td>5-breakpoint mobile-first CSS (0–479 / 480–767 / 768–899 / 900–1099 / 1100+)</td><td>Mobile-First</td><td>Google Mobile-First Index; Core Web Vitals page experience</td><td class="status-info">Proposed</td></tr>
+      <tr><td>21</td><td>Mobile sticky order bar — fixed bottom (image + name + qty + price + Order Now)</td><td>Mobile-First / CRO</td><td>Mobile CTA visibility; iOS safe-area inset compliance</td><td class="status-info">Proposed</td></tr>
+      <tr><td>22</td><td>Developer notes page (dev-notes.html) made fully responsive — 4 breakpoints</td><td>Dev Reference</td><td>Readable on phone/tablet for stakeholder and developer review</td><td class="status-info">Proposed</td></tr>
+      <tr><td>23</td><td>URL strategy: query params + canonical strip for colour/width/side variants (Option 1 default; Option 3 if colour search demand grows)</td><td>SEO / URL Architecture</td><td>Zero duplicate content risk; scalable to per-colour URLs</td><td class="status-info">Proposed</td></tr>
+      <tr><td>24</td><td>Product schema: ItemList under one URL (Option 1 default); dedicated SKU URLs with own canonical (Option 3 if Shopping campaigns need variant landing pages)</td><td>Schema / Merchant Centre</td><td>Merchant Centre eligibility; scalable to variant-level campaigns</td><td class="status-info">Proposed</td></tr>
     </tbody>
   </table>
 
@@ -2085,6 +2086,357 @@ function updateMobileStickyBar() {
 
 <span class="hl-com">/* LARGE DESKTOP: 1100px+ — 340px notes col */</span>
 <span class="hl-com">/* Base styles — no override needed */</span></span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 13: URL STRATEGY FOR COLOUR & OPTION VARIANTS
+  ══════════════════════════════════════════ -->
+  <div id="s13" class="section-head">
+    <div class="section-num">13</div>
+    <h2>URL Strategy for Colour & Option Variants — Default Option 1, Scalable to Option 3</h2>
+  </div>
+
+  <div class="change-block">
+    <div class="change-notes">
+      <div class="change-tag tag-seo">SEO</div>
+      <div class="change-tag tag-schema">URL Architecture</div>
+      <div class="change-title">How colour, width, and print-side selections are handled in URLs without creating duplicate content</div>
+      <p class="change-desc">
+        When a visitor selects a colour (e.g. Navy Blue) or width (e.g. 2cm) on the product page, a URL decision must be made: does the browser update the address bar? If so, how? This choice directly affects duplicate content risk, Google crawl budget, and long-term SEO scalability.<br><br>
+        Two approaches are documented. <strong>Option 1 is proposed as the default</strong>. Option 3 is available as a future upgrade path if search demand for individual colours grows.
+      </p>
+
+      <!-- OPTION 1 BOX -->
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">
+          ✅ Option 1 — Query Parameters + Canonical (Default / Proposed)
+        </div>
+        <div style="font-family:var(--mono);font-size:11px;background:#0d1117;color:#a8ff78;padding:8px 10px;border-radius:6px;margin-bottom:8px;line-height:1.8;">
+          /product/polyester-lanyard-silk-screen-printing<span style="color:#8b949e;">?colour=green&width=1cm&side=single</span><br>
+          /product/polyester-lanyard-silk-screen-printing<span style="color:#8b949e;">?colour=navy&width=2cm&side=double</span>
+        </div>
+        <p style="font-size:12.5px;color:#166534;line-height:1.65;margin-bottom:6px;">
+          The base URL stays the same. Variant selections update the URL via query parameters. The <strong>dynamic canonical script</strong> already implemented strips these parameters and points all variants back to the clean base URL — preventing duplicate content from being indexed.
+        </p>
+        <p style="font-size:12.5px;color:#166534;line-height:1.65;margin:0;">
+          The colour and option data is communicated to Google through the <code>color</code>, <code>size</code>, and <code>material</code> fields in the Product and ItemList structured data — no separate pages needed.
+        </p>
+      </div>
+
+      <!-- OPTION 3 BOX -->
+      <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">
+          🔭 Option 3 — Separate Canonical URLs Per Colour (Future / If Search Demand Warrants)
+        </div>
+        <div style="font-family:var(--mono);font-size:11px;background:#0d1117;color:#79c0ff;padding:8px 10px;border-radius:6px;margin-bottom:8px;line-height:1.8;">
+          /product/polyester-lanyard-silk-screen-printing/green<br>
+          /product/polyester-lanyard-silk-screen-printing/navy-blue<br>
+          /product/polyester-lanyard-silk-screen-printing/red
+        </div>
+        <p style="font-size:12.5px;color:#1e3a8a;line-height:1.65;margin-bottom:6px;">
+          Each colour gets its own URL with its own canonical pointing to itself. Upgrade to this model only when Google Search Console or keyword research shows meaningful search volume for colour-specific queries (e.g. <em>"green custom lanyards Australia"</em>).
+        </p>
+        <p style="font-size:12.5px;color:#1e3a8a;line-height:1.65;margin:0;">
+          Each colour page would require: a unique hero image, colour-specific Product schema with its own <code>image</code>, a unique first paragraph mentioning the colour's common use case, and its own <code>&lt;link rel="canonical"&gt;</code> pointing to itself (not the parent).
+        </p>
+      </div>
+
+      <div class="impact-box">
+        <div class="impact-label">Decision criteria for upgrading to Option 3</div>
+        <ul>
+          <li>GSC shows 100+ monthly impressions for colour-specific queries</li>
+          <li>Client can supply unique photography per colour</li>
+          <li>CMS supports colour-slug URL routing cleanly</li>
+          <li>Content team can write unique copy per colour (min. 80 words)</li>
+        </ul>
+      </div>
+
+      <div class="warning-box">
+        <strong>Canonical script — add colour/option params to strip list</strong>
+        The dynamic canonical already strips <code>utm_*</code>, <code>fbclid</code>, <code>gclid</code>. Ensure <code>colour</code>, <code>width</code>, and <code>side</code> are also added to the strip list so WooCommerce query parameters never leak into Google's canonical index.
+      </div>
+
+      <div class="ref-links">
+        <a href="https://developers.google.com/search/docs/crawling-indexing/canonicalization" target="_blank">Google: Canonicalization guide</a>
+        <a href="https://developers.google.com/search/docs/appearance/structured-data/product#product-variants" target="_blank">Google: Product variants in structured data</a>
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-before">Option 1 — Current (Proposed)</span>
+          <span class="panel-file">Query params + canonical strip</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-com">/* Dynamic canonical — strips variant params
+   so Google always sees the clean base URL */</span>
+<span class="hl-new">(function() {
+  var url = new URL(window.location.href);
+  [
+    <span class="hl-com">// Campaign params</span>
+    <span class="hl-str">'utm_source'</span>, <span class="hl-str">'utm_medium'</span>,
+    <span class="hl-str">'utm_campaign'</span>, <span class="hl-str">'utm_term'</span>,
+    <span class="hl-str">'fbclid'</span>, <span class="hl-str">'gclid'</span>, <span class="hl-str">'ref'</span>,
+    <span class="hl-com">// Variant/configurator params</span>
+    <span class="hl-str">'colour'</span>, <span class="hl-str">'color'</span>,
+    <span class="hl-str">'width'</span>, <span class="hl-str">'side'</span>,
+    <span class="hl-str">'size'</span>, <span class="hl-str">'variant'</span>
+  ].forEach(function(p) {
+    url.searchParams.delete(p);
+  });
+  document.getElementById('canonicalTag')
+    .setAttribute('href', url.href);
+})();</span>
+
+<span class="hl-com">/* Product schema: colour listed as a field,
+   not as separate pages */</span>
+<span class="hl-new">{
+  <span class="hl-key">"@type"</span>: <span class="hl-str">"Product"</span>,
+  <span class="hl-key">"name"</span>: <span class="hl-str">"Polyester Lanyard..."</span>,
+  <span class="hl-key">"color"</span>: <span class="hl-str">"Custom — Green, Navy, Red,
+            Black, Purple, Orange,
+            Silver, Charcoal"</span>,
+  <span class="hl-key">"size"</span>: <span class="hl-str">"1cm, 1.5cm, 2cm, 2.5cm × 90cm"</span>,
+  <span class="hl-com">// All variants share one canonical URL</span>
+  <span class="hl-key">"url"</span>: <span class="hl-str">"...product/polyester-lanyard-..."</span>
+}</span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:3px 10px;border-radius:20px;">Option 3 — Future (If demand warrants)</span>
+          <span class="panel-file">Colour-slug URLs, own canonical per page</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-com">/* Each colour: its own URL + own canonical */</span>
+<span class="hl-com">/* /product/polyester-lanyard-.../green */</span>
+
+<span class="hl-new"><span class="hl-tag">&lt;link</span> <span class="hl-attr">rel</span>=<span class="hl-str">"canonical"</span>
+  <span class="hl-attr">href</span>=<span class="hl-str">"https://badge-a-minit.com.au/product/
+  polyester-lanyard-silk-screen-printing/green"</span><span class="hl-tag">/&gt;</span>
+
+<span class="hl-com">/* Unique Product schema per colour page */</span>
+{
+  <span class="hl-key">"@type"</span>: <span class="hl-str">"Product"</span>,
+  <span class="hl-key">"name"</span>: <span class="hl-str">"Green Polyester Lanyard
+           (Silk Screen Printing)"</span>,
+  <span class="hl-key">"color"</span>: <span class="hl-str">"Green"</span>,
+  <span class="hl-key">"image"</span>: <span class="hl-str">"...green-lanyard-hero.jpg"</span>,
+  <span class="hl-key">"description"</span>: <span class="hl-str">"Green polyester lanyards
+    are the most popular choice for
+    schools, sports clubs, and
+    corporate sustainability programs
+    across Australia..."</span>,
+  <span class="hl-key">"url"</span>: <span class="hl-str">"...polyester-lanyard.../green"</span>
+}
+
+<span class="hl-com">/* Upgrade trigger: GSC impressions
+   for colour queries exceed 100/month */</span></span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 14: OTHER DUAL-OPTION DECISIONS IN THIS PROPOSAL
+  ══════════════════════════════════════════ -->
+  <div id="s14" class="section-head">
+    <div class="section-num">14</div>
+    <h2>Other Dual-Option Architecture Decisions in This Proposal</h2>
+  </div>
+
+  <div style="background:#f5faf0;border:1px solid var(--green-border);border-radius:12px;padding:20px 24px;margin-bottom:28px;font-size:13px;color:#2a3a20;line-height:1.7;">
+    <strong style="display:block;margin-bottom:8px;color:var(--green-dark);">Principle applied throughout this proposal:</strong>
+    Where a technical decision has two valid approaches — one simpler with lower risk, one more powerful but requiring more resources — both are documented. The simpler option is proposed as default. The advanced option is flagged with the conditions under which it becomes worthwhile.
+  </div>
+
+  <!-- DUAL DECISION 1 -->
+  <div class="change-block" style="margin-bottom:20px;">
+    <div class="change-notes">
+      <div class="change-tag tag-seo">Structured Data</div>
+      <div class="change-title">Product Schema: Single parent Product vs. full per-variant Product pages</div>
+      <p class="change-desc">
+        <strong>Option 1 (Default — Proposed):</strong> One Product schema on the product page with an ItemList of 8 variants. All variants share the same canonical URL. Google sees one product with configuration options.<br><br>
+        <strong>Option 3 (Future):</strong> Each of the 8 SKU variants (PL-Single-01 through PL-Double-08) gets its own dedicated URL with its own Product schema, unique image, and canonical. Maximum Merchant Centre coverage but 8× the content and maintenance overhead.
+      </p>
+      <div class="warning-box">
+        <strong>Upgrade trigger</strong>
+        Move to Option 3 when Google Merchant Centre flags individual variants as disapproved due to missing per-variant page URLs, or when paid Shopping campaigns require variant-level landing pages for Quality Score improvement.
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Option 1 — Proposed</span>
+          <span class="panel-file">ItemList under one Product URL</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new"><span class="hl-com">/* One canonical URL, 8 variants in ItemList */</span>
+{
+  <span class="hl-key">"@type"</span>: <span class="hl-str">"Product"</span>,         <span class="hl-com">// parent</span>
+  <span class="hl-key">"url"</span>: <span class="hl-str">"...polyester-lanyard-..."</span>,
+  <span class="hl-key">"offers"</span>: {
+    <span class="hl-key">"@type"</span>: <span class="hl-str">"AggregateOffer"</span>,
+    <span class="hl-key">"lowPrice"</span>: <span class="hl-str">"0.86"</span>,
+    <span class="hl-key">"offerCount"</span>: <span class="hl-str">"8"</span>
+  }
+}
+<span class="hl-com">// + separate ItemList schema
+// listing all 8 SKUs with image, desc, brand</span></span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:3px 10px;border-radius:20px;">Option 3 — Future</span>
+          <span class="panel-file">Dedicated URL per SKU variant</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-com">/* /product/polyester-lanyard.../1cm-single */</span>
+<span class="hl-com">/* /product/polyester-lanyard.../2cm-double */</span>
+{
+  <span class="hl-key">"@type"</span>: <span class="hl-str">"Product"</span>,
+  <span class="hl-key">"name"</span>: <span class="hl-str">"Polyester Lanyard 1cm
+           Single Sided (PL-Single-01)"</span>,
+  <span class="hl-key">"sku"</span>: <span class="hl-str">"PL-Single-01"</span>,
+  <span class="hl-key">"url"</span>: <span class="hl-str">"...polyester-lanyard.../1cm-single"</span>,
+  <span class="hl-key">"offers"</span>: {
+    <span class="hl-key">"@type"</span>: <span class="hl-str">"Offer"</span>,
+    <span class="hl-key">"price"</span>: <span class="hl-str">"2.44"</span>
+  }
+}
+<span class="hl-com">// ×8 — one per SKU, own canonical each</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- DUAL DECISION 2 -->
+  <div class="change-block" style="margin-bottom:20px;">
+    <div class="change-notes">
+      <div class="change-tag tag-ux">Image Gallery</div>
+      <div class="change-title">Product images: Single product URL with JS colour-swap vs. unique images per colour page</div>
+      <p class="change-desc">
+        <strong>Option 1 (Default — Proposed):</strong> The colour swatch selector swaps the main product image via JavaScript — no page reload, no new URL. The ImageGallery schema lists the 6 shot types. All images reference the same product URL in their <code>contentUrl</code>.<br><br>
+        <strong>Option 3 (Future):</strong> When colour-specific pages exist (per Section 13), each page hosts unique photography for that colour — the ImageGallery schema on the green page references green lanyard images only. This dramatically improves Google Image Search ranking for colour-specific queries.
+      </p>
+      <div class="warning-box">
+        <strong>Photography requirement for Option 3</strong>
+        Each colour needs: wide shot, fabric close-up, male mockup, female mockup, hook close-up, logo close-up — all photographed in that specific colour. This is a significant production cost — recommend only for the top 3 best-selling colours first.
+      </div>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Option 1 — Proposed</span>
+          <span class="panel-file">JS colour-swap, one ImageGallery schema</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new"><span class="hl-com">/* Swatch click → JS swaps main image src
+   No URL change, no page reload */</span>
+function selectSwatch(el, colour, src) {
+  img.src   = src;
+  img.alt   = <span class="hl-str">`...${colour}...`</span>;
+  img.title = <span class="hl-str">`...${colour}...`</span>;
+}
+
+<span class="hl-com">/* ImageGallery: 6 shots, all same product */</span>
+{
+  <span class="hl-key">"@type"</span>: <span class="hl-str">"ImageGallery"</span>,
+  <span class="hl-key">"associatedMedia"</span>: [
+    { <span class="hl-key">"name"</span>: <span class="hl-str">"Wide Shot"</span>,       pos: 1 },
+    { <span class="hl-key">"name"</span>: <span class="hl-str">"Fabric Close-Up"</span>, pos: 2 },
+    { <span class="hl-key">"name"</span>: <span class="hl-str">"Male Mockup"</span>,     pos: 3 },
+    { <span class="hl-key">"name"</span>: <span class="hl-str">"Female Mockup"</span>,   pos: 4 },
+    { <span class="hl-key">"name"</span>: <span class="hl-str">"Hook Detail"</span>,     pos: 5 },
+    { <span class="hl-key">"name"</span>: <span class="hl-str">"Logo Close-Up"</span>,  pos: 6 }
+  ]
+}</span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:3px 10px;border-radius:20px;">Option 3 — Future</span>
+          <span class="panel-file">Per-colour ImageGallery schema</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-com">/* On /product/.../green — green images only */</span>
+{
+  <span class="hl-key">"@type"</span>: <span class="hl-str">"ImageGallery"</span>,
+  <span class="hl-key">"name"</span>: <span class="hl-str">"Green Polyester Lanyard
+           — Product Image Gallery"</span>,
+  <span class="hl-key">"associatedMedia"</span>: [
+    {
+      <span class="hl-key">"contentUrl"</span>: <span class="hl-str">"...green-lanyard-wide.jpg"</span>,
+      <span class="hl-key">"name"</span>: <span class="hl-str">"Wide Shot — Green Polyester
+               Lanyard on White Background"</span>
+    },
+    {
+      <span class="hl-key">"contentUrl"</span>: <span class="hl-str">"...green-fabric-closeup.jpg"</span>,
+      <span class="hl-key">"name"</span>: <span class="hl-str">"Green Fabric Weave Close-Up"</span>
+    }
+    <span class="hl-com">// ... 4 more green-specific shots</span>
+  ]
+}
+<span class="hl-com">// ×8 colours = 48 unique images needed</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- DUAL DECISION 3 -->
+  <div class="change-block" style="margin-bottom:20px;">
+    <div class="change-notes">
+      <div class="change-tag tag-schema">Schema</div>
+      <div class="change-title">FAQPage: Centralised on product page vs. distributed across colour/variant pages</div>
+      <p class="change-desc">
+        <strong>Option 1 (Default — Proposed):</strong> All 7 FAQ questions live on the single product page and are declared in one FAQPage JSON-LD block. Google surfaces these as rich results for the main product URL.<br><br>
+        <strong>Option 3 (Future):</strong> If colour-specific pages are created, each page hosts a subset of FAQs relevant to that variant (e.g. the Green page adds <em>"Is green available for custom school lanyards?"</em>). This increases the total number of FAQ-eligible URLs for long-tail queries.
+      </p>
+    </div>
+    <div class="code-panels">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label label-after">Option 1 — Proposed</span>
+          <span class="panel-file">7 FAQs on one page</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-new"><span class="hl-com">/* Single FAQPage block, 7 questions */</span>
+{
+  <span class="hl-key">"@type"</span>: <span class="hl-str">"FAQPage"</span>,
+  <span class="hl-key">"mainEntity"</span>: [
+    { <span class="hl-key">"name"</span>: <span class="hl-str">"What is the difference
+             between single-sided and
+             double-sided printing?"</span> },
+    { <span class="hl-key">"name"</span>: <span class="hl-str">"Is there a minimum
+             order quantity?"</span> },
+    <span class="hl-com">// ... 5 more generic FAQs</span>
+  ]
+}
+<span class="hl-com">// Lives on: /product/polyester-lanyard-...
+// Covers all visitors, all variants</span></span></pre>
+      </div>
+      <div class="code-panel">
+        <div class="panel-header">
+          <span class="panel-label" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:3px 10px;border-radius:20px;">Option 3 — Future</span>
+          <span class="panel-file">Colour-specific FAQ additions</span>
+          <div class="panel-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        </div>
+        <pre><span class="hl-com">/* On /product/.../green — adds colour FAQs */</span>
+{
+  <span class="hl-key">"@type"</span>: <span class="hl-str">"FAQPage"</span>,
+  <span class="hl-key">"mainEntity"</span>: [
+    <span class="hl-com">// Inherited generic FAQs (same 7)</span>
+    { <span class="hl-key">"name"</span>: <span class="hl-str">"What is the difference..."</span> },
+    <span class="hl-com">// + Colour-specific additions:</span>
+    {
+      <span class="hl-key">"name"</span>: <span class="hl-str">"Is green available for
+               custom school lanyards?"</span>,
+      <span class="hl-key">"acceptedAnswer"</span>: { <span class="hl-key">"text"</span>:
+        <span class="hl-str">"Yes — our green polyester
+         lanyards are extremely popular
+         for schools across Australia..."</span>
+      }
+    }
+  ]
+}
+<span class="hl-com">// Lives on: /product/polyester-lanyard.../green
+// Targets: colour-specific long-tail queries</span></pre>
       </div>
     </div>
   </div>
