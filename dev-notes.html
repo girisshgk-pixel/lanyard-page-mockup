@@ -501,6 +501,7 @@ pre::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
   <a class="toc-link" href="#s9">Merchant Listings</a>
   <a class="toc-link" href="#s10">FAQ Schema</a>
   <a class="toc-link" href="#s11">Mobile-First</a>
+  <a class="toc-link" href="#s11">Mobile-First</a>
   <a class="toc-link" href="#s12">Dev Notes Responsive</a>
   <a class="toc-link" href="#s13">URL Strategy</a>
   <a class="toc-link" href="#s14">Dual-Option Decisions</a>
@@ -541,7 +542,7 @@ pre::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
       <tr><td>14</td><td>Full OG + Twitter/X card meta tags</td><td>SEO</td><td>Social share previews; CTR from social referrals</td><td class="status-info">Proposed</td></tr>
       <tr><td>15</td><td>Robots: noindex/nofollow + max-preview directives</td><td>SEO</td><td>Full snippet/image preview in SERPs even unindexed</td><td class="status-info">Proposed</td></tr>
       <tr><td>16</td><td>Dynamic canonical URL (strips UTM/tracking params)</td><td>SEO</td><td>Prevents duplicate content from campaign traffic</td><td class="status-info">Proposed</td></tr>
-      <tr><td>17</td><td>Minimum order updated to 50 units (from 250)</td><td>Content</td><td>Accurate product data; Merchant Centre compliance</td><td class="status-info">Proposed</td></tr>
+      <tr><td>17</td><td>Minimum order updated to 100 units (corrected — per Badge-A-Minit FAQ: 100 units MOQ for printed lanyards)</td><td>Content</td><td>Accurate product data; Merchant Centre compliance</td><td class="status-info">Proposed</td></tr>
       <tr><td>18</td><td>Merchant listing: shippingDetails from /shipping-options</td><td>Schema</td><td>Removes optional warning in Rich Results Test</td><td class="status-warn">Pending URL Access</td></tr>
       <tr><td>19</td><td>Merchant listing: returnPolicy from /terms-and-conditions</td><td>Schema</td><td>Removes optional warning in Rich Results Test</td><td class="status-warn">Pending URL Access</td></tr>
 
@@ -731,7 +732,7 @@ pre::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
         background. Explore and Buy Now from
         Badge-A-Minit.',
         'Wide-Shot View of Polyester Lanyard ...
-        minimum order of 50 units starts at
+        minimum order of 250 units starts at
         $2.44 per unit. Buy Now from Badge-A-Minit.',
         'Wide Shot — Full Product View')"</span>
       <span class="hl-attr">aria-label</span>=<span class="hl-str">"View 1 of 6: Wide-shot"</span><span class="hl-tag">&gt;</span>
@@ -840,7 +841,7 @@ pre::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
   Explore and Buy Now from Badge-A-Minit."</span>
   <span class="hl-attr">title</span>=<span class="hl-str">"Wide-Shot View of Polyester Lanyard
   (Silk Screen Printing) with a minimum
-  order of 50 units starts at $2.44 per
+  order of 100 units starts at $2.44 per
   unit. Buy Now from Badge-A-Minit."</span>
   <span class="hl-attr">width</span>=<span class="hl-str">"1080"</span> <span class="hl-attr">height</span>=<span class="hl-str">"1080"</span>
   <span class="hl-attr">loading</span>=<span class="hl-str">"eager"</span>
@@ -976,7 +977,7 @@ pre::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
       <div class="change-title">Static pricing table → interactive live calculator with savings display</div>
       <p class="change-desc">
         The current page shows pricing in a static HTML table. Users had to mentally calculate their total and find their applicable tier — a known friction point for B2B buyers ordering in bulk.<br><br>
-        The proposed calculator lets buyers select lanyard width, print side (single/double), drag a quantity slider (50–2,000), and instantly see unit price, total cost, and savings vs. single-unit rate. When quantity exceeds 250 units, a green savings banner appears automatically.<br><br>
+        The proposed calculator lets buyers select lanyard width, print side (single/double), drag a quantity slider (250–2,000), and instantly see unit price, total cost, and savings vs. single-unit rate. When quantity exceeds 2100 units, a green savings banner appears automatically.<br><br>
         The calculator exists in two places: inline in the sticky left panel (for immediate purchase decisions) and as a full-width section in the scrollable content area (for deeper exploration).
       </p>
       <div class="impact-box">
@@ -1027,7 +1028,7 @@ pre::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
            d: [2.63,2.11,1.62,1.42,1.22,0.93] },
   <span class="hl-com">// ... 2cm and 2.5cm rows</span>
 };
-const TIERS = [50,250,500,1000,2500,5000,10000];
+const TIERS = [100,250,500,1000,2500,5000,10000];
 
 function getPrice(qty, size, side) {
   const p = PRICES[size][side];
@@ -1423,7 +1424,7 @@ function updateCalc() {
       screen printing — 2.5cm wide × 90cm
       long, double-sided print. Widest
       option with full branding on both
-      faces. Minimum order 50 units."</span>,
+      faces. Minimum order 250 units."</span>,
     <span class="hl-key">"sku"</span>: <span class="hl-str">"PL-Double-08"</span>,
     <span class="hl-key">"mpn"</span>: <span class="hl-str">"PL-POLY-SILK-D08"</span>,
     <span class="hl-key">"image"</span>: <span class="hl-str">"...polyester-lanyard-...8605.jpg"</span>,
@@ -1677,7 +1678,7 @@ function updateCalc() {
     <span class="hl-tag">&lt;img</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-img"</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbImg"</span><span class="hl-tag">/&gt;</span>
     <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-info"</span><span class="hl-tag">&gt;</span>
       <span class="hl-tag">&lt;div</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbName"</span><span class="hl-tag">&gt;</span>Polyester Lanyard...<span class="hl-tag">&lt;/div&gt;</span>
-      <span class="hl-tag">&lt;div</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbMeta"</span><span class="hl-tag">&gt;</span>Min. 50 units · 1cm · Single<span class="hl-tag">&lt;/div&gt;</span>
+      <span class="hl-tag">&lt;div</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbMeta"</span><span class="hl-tag">&gt;</span>Min. 250 units · 1cm · Single<span class="hl-tag">&lt;/div&gt;</span>
     <span class="hl-tag">&lt;/div&gt;</span>
     <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-price"</span><span class="hl-tag">&gt;</span>
       <span class="hl-tag">&lt;span</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbPrice"</span><span class="hl-tag">&gt;</span>$2.44<span class="hl-tag">&lt;/span&gt;</span>
@@ -1973,7 +1974,7 @@ function updateCalc() {
         Polyester Lanyard (Silk Screen Printing)
       <span class="hl-tag">&lt;/div&gt;</span>
       <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-str">"msb-meta"</span> <span class="hl-attr">id</span>=<span class="hl-str">"msbMeta"</span><span class="hl-tag">&gt;</span>
-        Min. 50 units · 1cm · Single-Sided
+        Min. 250 units · 1cm · Single-Sided
       <span class="hl-tag">&lt;/div&gt;</span>
     <span class="hl-tag">&lt;/div&gt;</span>
 
@@ -1994,7 +1995,7 @@ function updateCalc() {
 
 <span class="hl-com">/* JS: syncs bar with sidebar state */</span>
 function updateMobileStickyBar() {
-  const qty   = parseInt(sidebarQty.value) || 50;
+  const qty   = parseInt(sidebarQty.value) || 100;
   const price = getPrice(qty, sbSize, sbSide);
   msbMeta.textContent  =
     qty + ' units · ' + sbSize + 'cm · '

@@ -47,7 +47,7 @@ and a full developer notes document that justifies every proposed change with be
 ### UX & Conversion Rate Optimisation
 - **Sticky left panel** — product image, title, price, size/colour selector, and Order Now CTA fixed to viewport while content scrolls on the right (Amazon-style layout)
 - **1080×1080 product image viewer** — vertical thumbnail strip (6 shots: wide, fabric, male mockup, female mockup, hook detail, logo close-up) with full-screen zoom modal on click
-- **Live bulk price calculator** — slider from 50–2,000 units with real-time unit price, total, and savings display; volume discount banner reveals at 250+ units
+- **Live bulk price calculator** — slider from 100–2,000 units with real-time unit price, total, and savings display; volume discount banner reveals at 250+ units
 - **8 colour swatches** — Green, Navy, Red, Black, Purple, Orange, Silver, Charcoal; updates main image, alt text, and title dynamically on selection
 
 ### SEO & Structured Data
@@ -89,7 +89,7 @@ Both update dynamically via JS when the user switches shot type or colour.
 > ⚠️ Change to `index, follow` before production deployment. Keep max-preview directives.
 
 ### Minimum Order Quantity
-Updated throughout page copy, schema, and calculator from **250 units → 50 units**.
+Updated throughout page copy, schema, and calculator to **250 units**.
 
 ---
 
@@ -202,7 +202,8 @@ FAQ accordion toggles `aria-expanded`. Colour swatches use `role="radio"` + `ari
 ## 📞 Contact
 
 **Girish Kumar** — E-Commerce SEO Manager
-**Brand:** Badge-A-Minit · 56a Prospect Road, Prospect SA 5082 · (08) 8363 1655
+**Agency:** AdsPilot
+**Client:** Badge-A-Minit · 56a Prospect Road, Prospect SA 5082 · (08) 8363 1655
 
 ---
 
