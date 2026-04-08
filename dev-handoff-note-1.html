@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Developer Hand-off — Programmatic Category Page Template | Badge-A-Minit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & TOKENS ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green-dark:    #1a4d0c;
+  --green-mid:     #2e8b22;
+  --green-light:   #3da522;
+  --green-pale:    #eaf5df;
+  --green-border:  #c5e5a8;
+  --green-muted:   #4a6b3a;
+  --green-accent:  #a8f060;
+  --text-dark:     #1a2e0d;
+  --text-body:     #2a3a20;
+  --text-muted:    #4a6b3a;
+  --white:         #ffffff;
+  --bg:            #f5faf0;
+  --border:        #d6edc7;
+  --amber-pale:    #fef3c7;
+  --amber-border:  #fcd34d;
+  --amber:         #92400e;
+  --blue-pale:     #eff6ff;
+  --blue-border:   #bfdbfe;
+  --blue:          #1d4ed8;
+  --code-bg:       #0d1117;
+  --code-text:     #e6edf3;
+  --mono: 'SF Mono','Fira Code','Cascadia Code','Consolas',monospace;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-dark);
+  background: var(--bg);
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--green-dark);
+  color: rgba(255,255,255,0.8);
+  font-size: 12px;
+  padding: 8px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.topbar-trust { display: flex; gap: 18px; }
+.topbar-trust span::before { content: '✓ '; color: var(--green-accent); }
+.topbar a { color: var(--green-accent); text-decoration: none; }
+
+/* ── HEADER ── */
+.doc-header {
+  background: linear-gradient(135deg, var(--green-dark) 0%, #2a7218 100%);
+  padding: 36px 40px 30px;
+  color: white;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  margin-bottom: 18px;
+  transition: color 0.2s;
+}
+.back-link:hover { color: var(--green-accent); }
+.back-link svg { width: 12px; height: 12px; }
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.doc-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.25;
+}
+.doc-header h1 span { color: var(--green-accent); }
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.status-dot {
+  width: 7px; height: 7px;
+  background: var(--green-accent);
+  border-radius: 50%;
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px 0;
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.65);
+  border-top: 1px solid rgba(255,255,255,0.12);
+  padding-top: 16px;
+}
+.meta-grid strong { display: block; color: white; font-weight: 600; font-size: 13px; }
+
+/* ── TOC BAR ── */
+.toc-bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 11px 40px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+}
+.toc-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-right: 4px; }
+.toc-link {
+  font-size: 12px; color: var(--green-dark); text-decoration: none;
+  padding: 4px 10px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--white);
+  transition: background 0.2s; white-space: nowrap;
+}
+.toc-link:hover { background: var(--green-pale); border-color: var(--green-border); }
+
+/* ── MAIN LAYOUT ── */
+.content { max-width: 1100px; margin: 0 auto; padding: 36px 40px 80px; }
+
+/* ── SECTION HEADINGS ── */
+.section { margin-bottom: 48px; }
+.section-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--green-mid);
+  margin-bottom: 6px; display: block;
+}
+.section-h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700; color: var(--text-dark);
+  margin-bottom: 10px; line-height: 1.25;
+}
+.section-intro {
+  font-size: 14px; color: var(--text-muted);
+  margin-bottom: 22px; line-height: 1.7;
+  max-width: 700px;
+}
+.section-head-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.section-num {
+  width: 28px; height: 28px;
+  background: var(--green-mid); color: white;
+  border-radius: 50%; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.section-divider {
+  border: none; border-top: 2px solid var(--border);
+  margin: 0 0 32px;
+}
+
+/* ── OVERVIEW BOX ── */
+.overview-box {
+  background: var(--green-pale);
+  border-left: 4px solid var(--green-mid);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 18px 22px;
+  font-size: 14px; color: var(--text-body); line-height: 1.75;
+}
+.overview-box strong { color: var(--green-dark); }
+
+/* ── BEFORE / AFTER CARDS ── */
+.ba-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--white);
+  box-shadow: 0 2px 12px rgba(26,77,12,0.06);
+}
+.ba-col { display: flex; flex-direction: column; }
+.ba-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 18px; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.8px; text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.ba-header.before-h {
+  background: var(--amber-pale); color: #78350f;
+  border-right: 1px solid var(--border);
+}
+.ba-header.after-h  { background: var(--green-pale); color: var(--green-dark); }
+.ba-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.ba-dot.before-dot { background: #d97706; }
+.ba-dot.after-dot  { background: var(--green-mid); }
+
+.ba-body {
+  padding: 20px; font-size: 13.5px; color: var(--text-body); line-height: 1.75;
+  flex: 1;
+}
+.ba-body.before-body { background: #fffdf7; border-right: 1px solid var(--border); }
+.ba-body.after-body  { background: #f8fef3; }
+.ba-body strong { color: var(--text-dark); }
+.ba-body em { color: var(--text-muted); font-style: italic; }
+
+/* ── CODE BLOCKS ── */
+pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 16px 18px;
+  border-radius: var(--radius-sm);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-x: auto;
+  margin: 12px 0 0;
+  white-space: pre;
+}
+pre::-webkit-scrollbar { height: 4px; }
+pre::-webkit-scrollbar-thumb { background: #444; border-radius: 2px; }
+code {
+  background: var(--green-pale);
+  color: var(--green-dark);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  border: 1px solid var(--green-border);
+}
+pre code { background: none; border: none; color: inherit; padding: 0; font-size: inherit; }
+
+/* Syntax colours in pre blocks */
+.kw  { color: #ff79c6; }   /* keyword/tag */
+.fn  { color: #50fa7b; }   /* function */
+.str { color: #a8ff78; }   /* string */
+.cm  { color: #6272a4; font-style: italic; } /* comment */
+.at  { color: #79c0ff; }   /* attribute */
+.va  { color: #ffb86c; }   /* variable */
+
+/* ── VAR PILLS ── */
+.var-pill {
+  display: inline-block;
+  background: #e0e7ff;
+  color: #3730a3;
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 12px;
+  font-family: var(--mono);
+  border: 1px solid #c7d2fe;
+}
+
+/* ── CALLOUT BOXES ── */
+.callout {
+  display: flex; gap: 12px;
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-size: 13px; line-height: 1.65;
+  align-items: flex-start;
+}
+.callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.callout strong { display: block; margin-bottom: 3px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.callout-warn  { background: var(--amber-pale); border: 1px solid var(--amber-border); color: #92400e; }
+.callout-warn strong { color: #78350f; }
+.callout-info  { background: var(--blue-pale); border: 1px solid var(--blue-border); color: #1e40af; }
+.callout-info strong { color: #1e3a8a; }
+.callout-green { background: var(--green-pale); border: 1px solid var(--green-border); color: var(--green-muted); }
+.callout-green strong { color: var(--green-dark); }
+
+/* ── URL EXAMPLE ── */
+.url-example {
+  background: var(--green-pale);
+  border: 1.5px solid var(--green-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--green-dark);
+  margin: 12px 0;
+  line-height: 2;
+}
+.url-example span { color: var(--green-mid); font-weight: 700; }
+
+/* ── TABLES ── */
+.table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 16px; }
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px; background: var(--white);
+}
+thead tr { background: var(--green-dark); }
+thead th {
+  padding: 11px 14px; text-align: left;
+  color: white; font-weight: 600;
+  font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase;
+}
+thead th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+thead th:last-child  { border-radius: 0 var(--radius-sm) 0 0; }
+tbody tr:nth-child(even) td { background: #f9fef6; }
+tbody td {
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  color: var(--text-body); vertical-align: top;
+}
+tbody tr:last-child td { border-bottom: none; }
+.var-table thead tr { background: #4338ca; }
+
+/* ── FOOTER ── */
+.doc-footer {
+  background: var(--green-dark); color: rgba(255,255,255,0.6);
+  padding: 18px 40px; font-size: 12px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 8px;
+}
+.doc-footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .topbar { padding: 8px 16px; flex-direction: column; text-align: center; }
+  .doc-header { padding: 24px 20px 20px; }
+  .doc-header h1 { font-size: 20px; }
+  .meta-grid { grid-template-columns: 1fr 1fr; }
+  .toc-bar { padding: 10px 16px; overflow-x: auto; flex-wrap: nowrap; }
+  .toc-link { flex-shrink: 0; }
+  .content { padding: 24px 16px 60px; }
+  .ba-grid { grid-template-columns: 1fr; }
+  .ba-header.before-h { border-right: none; border-bottom: 1px solid var(--border); }
+  .ba-body.before-body { border-right: none; border-bottom: 1px solid var(--border); }
+  .doc-footer { padding: 14px 16px; flex-direction: column; text-align: center; }
+}
+@media (min-width: 701px) and (max-width: 900px) {
+  .content { padding: 28px 24px 60px; }
+  .meta-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div>
+    <a href="tel:0883631655">(08) 8363 1655</a>
+    &nbsp;·&nbsp;
+    <a href="mailto:sales@badge-a-minit.com.au">sales@badge-a-minit.com.au</a>
+  </div>
+  <div class="topbar-trust">
+    <span>Programmatic SEO</span>
+    <span>WordPress + ACF</span>
+    <span>Category Page Template</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="doc-header">
+  <a href="./index.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+    Back to Product Page
+  </a>
+  <div class="header-row">
+    <h1>Developer Hand-off Note<br><span>Programmatic Category Page Template</span></h1>
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      Ready for Implementation
+    </div>
+  </div>
+  <div class="meta-grid">
+    <div>Project<strong>Programmatic SEO — Category Landing Pages</strong></div>
+    <div>Stack<strong>WordPress + ACF</strong></div>
+    <div>Prepared by<strong>Girish Kumar — SEO Manager</strong></div>
+    <div>Scope<strong>badge-a-minit.com.au</strong></div>
+  </div>
+</div>
+
+<!-- TOC -->
+<nav class="toc-bar" aria-label="Document sections">
+  <span class="toc-label">Jump to</span>
+  <a class="toc-link" href="#s0">Overview</a>
+  <a class="toc-link" href="#s1">H1 &amp; Lead</a>
+  <a class="toc-link" href="#s2">Trust Bar</a>
+  <a class="toc-link" href="#s3">Benefit Bullets</a>
+  <a class="toc-link" href="#s4">CTAs</a>
+  <a class="toc-link" href="#s5">Variable Map</a>
+  <a class="toc-link" href="#s6">ACF Field Group</a>
+  <a class="toc-link" href="#s7">Dynamic Meta</a>
+  <a class="toc-link" href="#s8">URL Structure</a>
+  <a class="toc-link" href="#s9">Thin Content</a>
+  <a class="toc-link" href="#s10">Sign-off</a>
+</nav>
+
+<div class="content">
+
+  <!-- ── OVERVIEW ── -->
+  <div class="section" id="s0">
+    <span class="section-eyebrow">What this document covers</span>
+    <h2 class="section-h2">Overview</h2>
+    <hr class="section-divider">
+    <div class="overview-box">
+      This note covers the implementation of a <strong>reusable programmatic page template</strong> for category-level landing pages on badge-a-minit.com.au. Each page is driven by ACF custom fields so the SEO team can populate and update content without touching code.<br><br>
+      The <strong>SEO Content Spec</strong> column shows the content design and variable pattern. The <strong>WordPress / ACF Implementation</strong> column shows the PHP template code for each section.
+    </div>
+  </div>
+
+  <!-- ── SECTION 1: H1 + LEAD ── -->
+  <div class="section" id="s1">
+    <div class="section-head-row">
+      <div class="section-num">1</div>
+      <span class="section-eyebrow" style="margin-bottom:0;">Programmatic Header &amp; Lead</span>
+    </div>
+    <h2 class="section-h2">H1 + Lead Paragraph</h2>
+    <hr class="section-divider">
+    <p class="section-intro">Goal: Establish <code>category_name</code> and location immediately in the H1 and opening paragraph so Google identifies the primary topic on first crawl.</p>
+
+    <div class="ba-grid">
+      <div class="ba-col">
+        <div class="ba-header before-h">
+          <span class="ba-dot before-dot"></span>
+          SEO Content Spec
+        </div>
+        <div class="ba-body before-body">
+          <strong>H1 pattern:</strong><br>
+          <span class="var-pill">[Category Name]</span> | Australia's Trusted Supplier<br><br>
+          <strong>Lead copy pattern:</strong><br>
+          High-quality <span class="var-pill">[Category Name]</span> delivered Australia-wide. From corporate branding to school requirements, we provide durable, premium <span class="var-pill">[Category Product Term]</span> with fast local turnaround.<br><br>
+          <strong>Example — Lanyards page:</strong><br>
+          <em>Custom Branded Lanyards | Australia's Trusted Supplier</em><br>
+          <em>High-quality Custom Branded Lanyards delivered Australia-wide…</em>
+        </div>
+      </div>
+      <div class="ba-col">
+        <div class="ba-header after-h">
+          <span class="ba-dot after-dot"></span>
+          WordPress / ACF Implementation
+        </div>
+        <div class="ba-body after-body">
+          <strong>ACF Fields:</strong> <code>category_name</code>, <code>category_product_term</code>
+<pre><span class="kw">&lt;h1&gt;</span>
+  <span class="kw">&lt;?php</span> <span class="fn">echo</span> <span class="fn">esc_html</span>(
+    <span class="fn">get_field</span>(<span class="str">'category_name'</span>)
+  ); <span class="kw">?&gt;</span> | Australia's Trusted Supplier
+<span class="kw">&lt;/h1&gt;</span>
+
+<span class="kw">&lt;p&gt;</span>High-quality
+  <span class="kw">&lt;?php</span> <span class="fn">echo</span> <span class="fn">esc_html</span>(
+    <span class="fn">get_field</span>(<span class="str">'category_name'</span>)
+  ); <span class="kw">?&gt;</span> delivered Australia-wide.
+  From corporate branding to school
+  requirements, we provide durable,
+  premium <span class="kw">&lt;?php</span> <span class="fn">echo</span> <span class="fn">esc_html</span>(
+    <span class="fn">get_field</span>(<span class="str">'category_product_term'</span>)
+  ); <span class="kw">?&gt;</span> with fast local turnaround.
+<span class="kw">&lt;/p&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 2: TRUST BAR ── -->
+  <div class="section" id="s2">
+    <div class="section-head-row">
+      <div class="section-num">2</div>
+      <span class="section-eyebrow" style="margin-bottom:0;">Trust Signals</span>
+    </div>
+    <h2 class="section-h2">Trust Bar</h2>
+    <hr class="section-divider">
+    <p class="section-intro">Placement: directly under the lead text or above the H1. Provides immediate social proof and creates a quotable fact for AI scrapers (ChatGPT, Perplexity, Google SGE).</p>
+
+    <div class="ba-grid">
+      <div class="ba-col">
+        <div class="ba-header before-h">
+          <span class="ba-dot before-dot"></span>
+          SEO Content Spec
+        </div>
+        <div class="ba-body before-body">
+          <strong>Trust bar copy (default):</strong><br><br>
+          <em>"Trusted by 5,000+ Australian Schools, Clubs, &amp; Government Departments"</em><br><br>
+          <strong>SEO Note:</strong> This line is intentionally written as a quotable fact so AI scrapers can extract and surface it as a trust signal when recommending suppliers — phrasing must remain assertive and numerical.
+        </div>
+      </div>
+      <div class="ba-col">
+        <div class="ba-header after-h">
+          <span class="ba-dot after-dot"></span>
+          WordPress / ACF Implementation
+        </div>
+        <div class="ba-body after-body">
+          <strong>ACF Field:</strong> <code>trust_bar_text</code> (Text, pre-filled default)<br><br>
+<pre><span class="kw">&lt;div</span> <span class="at">class</span>=<span class="str">"trust-bar"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;p&gt;</span><span class="kw">&lt;?php</span> <span class="fn">echo</span> <span class="fn">esc_html</span>(
+    <span class="fn">get_field</span>(<span class="str">'trust_bar_text'</span>)
+  ); <span class="kw">?&gt;&lt;/p&gt;</span>
+<span class="kw">&lt;/div&gt;</span></pre>
+          <br>
+          Set ACF default value to:<br>
+          <code>Trusted by 5,000+ Australian Schools, Clubs, &amp; Government Departments</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 3: BENEFIT BULLETS ── -->
+  <div class="section" id="s3">
+    <div class="section-head-row">
+      <div class="section-num">3</div>
+      <span class="section-eyebrow" style="margin-bottom:0;">On-Page Copy</span>
+    </div>
+    <h2 class="section-h2">Programmatic Benefit Bullets</h2>
+    <hr class="section-divider">
+    <p class="section-intro">Four bullets that adapt per category. Only <code>option_a</code>, <code>option_b</code>, <code>option_c</code>, and <code>product_use_case</code> change between pages — the structural copy stays constant.</p>
+
+    <div class="ba-grid">
+      <div class="ba-col">
+        <div class="ba-header before-h">
+          <span class="ba-dot before-dot"></span>
+          SEO Content Spec
+        </div>
+        <div class="ba-body before-body">
+          <ul style="padding-left:16px;margin-top:4px;display:flex;flex-direction:column;gap:10px;">
+            <li><strong>40+ Years of Excellence:</strong> Australia's choice for quality <span class="var-pill">[Category Name]</span> since 1984.</li>
+            <li><strong>Complete Range:</strong> Choose from <span class="var-pill">[Option A]</span>, <span class="var-pill">[Option B]</span>, and <span class="var-pill">[Option C]</span> styles.</li>
+            <li><strong>Wholesale Value:</strong> Factory-direct pricing for large-scale events, clubs, and businesses.</li>
+            <li><strong>Fast AU Shipping:</strong> Reliable local turnaround to meet your tightest <span class="var-pill">[Product Use Case]</span> deadlines.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ba-col">
+        <div class="ba-header after-h">
+          <span class="ba-dot after-dot"></span>
+          WordPress / ACF Implementation
+        </div>
+        <div class="ba-body after-body">
+          <strong>ACF Fields:</strong> <code>category_name</code>, <code>option_a</code>, <code>option_b</code>, <code>option_c</code>, <code>product_use_case</code>
+<pre><span class="kw">&lt;ul</span> <span class="at">class</span>=<span class="str">"benefit-bullets"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;li&gt;&lt;strong&gt;</span>40+ Years:<span class="kw">&lt;/strong&gt;</span>
+    Australia's choice for
+    <span class="kw">&lt;?php</span> <span class="fn">echo</span> <span class="fn">esc_html</span>(
+      <span class="fn">get_field</span>(<span class="str">'category_name'</span>)
+    ); <span class="kw">?&gt;</span> since 1984.<span class="kw">&lt;/li&gt;</span>
+  <span class="kw">&lt;li&gt;&lt;strong&gt;</span>Complete Range:<span class="kw">&lt;/strong&gt;</span>
+    Choose from
+    <span class="kw">&lt;?php</span> <span class="fn">echo</span> <span class="fn">esc_html</span>(
+      <span class="fn">get_field</span>(<span class="str">'option_a'</span>)
+    ); <span class="kw">?&gt;</span>,
+    <span class="kw">&lt;?php</span> <span class="fn">echo</span> <span class="fn">esc_html</span>(
+      <span class="fn">get_field</span>(<span class="str">'option_b'</span>)
+    ); <span class="kw">?&gt;</span>, and
+    <span class="kw">&lt;?php</span> <span class="fn">echo</span> <span class="fn">esc_html</span>(
+      <span class="fn">get_field</span>(<span class="str">'option_c'</span>)
+    ); <span class="kw">?&gt;</span> styles.<span class="kw">&lt;/li&gt;</span>
+  <span class="kw">&lt;li&gt;&lt;strong&gt;</span>Wholesale Value:<span class="kw">&lt;/strong&gt;</span>
+    Factory-direct pricing for
+    large-scale events.<span class="kw">&lt;/li&gt;</span>
+  <span class="kw">&lt;li&gt;&lt;strong&gt;</span>Fast AU Shipping:<span class="kw">&lt;/strong&gt;</span>
+    Meet your tightest
+    <span class="kw">&lt;?php</span> <span class="fn">echo</span> <span class="fn">esc_html</span>(
+      <span class="fn">get_field</span>(<span class="str">'product_use_case'</span>)
+    ); <span class="kw">?&gt;</span> deadlines.<span class="kw">&lt;/li&gt;</span>
+<span class="kw">&lt;/ul&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 4: CTAs ── -->
+  <div class="section" id="s4">
+    <div class="section-head-row">
+      <div class="section-num">4</div>
+      <span class="section-eyebrow" style="margin-bottom:0;">Conversion</span>
+    </div>
+    <h2 class="section-h2">Primary &amp; Secondary CTAs</h2>
+    <hr class="section-divider">
+    <p class="section-intro">Two CTA paths covering different user intents — browsing stock items vs. bulk or custom inquiry. Both labels and URLs are ACF-driven so the SEO team can update without a developer.</p>
+
+    <div class="ba-grid">
+      <div class="ba-col">
+        <div class="ba-header before-h">
+          <span class="ba-dot before-dot"></span>
+          SEO Content Spec
+        </div>
+        <div class="ba-body before-body">
+          <strong>Primary CTA</strong> — for visitors browsing stock:<br>
+          <em>[ Browse <span class="var-pill">[Category Name]</span> ]</em><br><br>
+          <strong>Secondary CTA</strong> — for B2B / custom orders:<br>
+          <em>[ Get a Custom Quote ]</em><br><br>
+          <strong>Intent mapping:</strong><br>
+          Primary → shop / product listing page<br>
+          Secondary → quote request / contact form
+        </div>
+      </div>
+      <div class="ba-col">
+        <div class="ba-header after-h">
+          <span class="ba-dot after-dot"></span>
+          WordPress / ACF Implementation
+        </div>
+        <div class="ba-body after-body">
+          <strong>ACF Fields:</strong> <code>cta_primary_label</code>, <code>cta_primary_url</code>, <code>cta_secondary_label</code>, <code>cta_secondary_url</code>
+<pre><span class="kw">&lt;a</span> <span class="at">href</span>=<span class="str">"&lt;?php echo esc_url(
+    get_field('cta_primary_url')
+  ); ?&gt;"</span>
+  <span class="at">class</span>=<span class="str">"btn btn-primary"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;?php</span> <span class="fn">echo</span> <span class="fn">esc_html</span>(
+    <span class="fn">get_field</span>(<span class="str">'cta_primary_label'</span>)
+  ); <span class="kw">?&gt;</span>
+<span class="kw">&lt;/a&gt;</span>
+
+<span class="kw">&lt;a</span> <span class="at">href</span>=<span class="str">"&lt;?php echo esc_url(
+    get_field('cta_secondary_url')
+  ); ?&gt;"</span>
+  <span class="at">class</span>=<span class="str">"btn btn-secondary"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;?php</span> <span class="fn">echo</span> <span class="fn">esc_html</span>(
+    <span class="fn">get_field</span>(<span class="str">'cta_secondary_label'</span>)
+  ); <span class="kw">?&gt;</span>
+<span class="kw">&lt;/a&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 5: VARIABLE MAP ── -->
+  <div class="section" id="s5">
+    <div class="section-head-row">
+      <div class="section-num">5</div>
+      <span class="section-eyebrow" style="margin-bottom:0;">SEO Team Reference</span>
+    </div>
+    <h2 class="section-h2">Variable Map — Example Pages</h2>
+    <hr class="section-divider">
+    <p class="section-intro">Reference for the SEO team when populating ACF fields per category page. All values entered via the WordPress admin — no developer action required for content population.</p>
+    <div class="table-wrap">
+      <table class="var-table">
+        <thead>
+          <tr>
+            <th>Variable / ACF Field</th>
+            <th>Lapel Pins Page</th>
+            <th>Lanyards Page</th>
+            <th>ID Cards Page</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>category_name</code></td><td>Custom &amp; Stock Lapel Pins</td><td>Custom Branded Lanyards</td><td>Secure Photo ID Cards</td></tr>
+          <tr><td><code>category_product_term</code></td><td>pins and badges</td><td>neck straps and attachments</td><td>identification solutions</td></tr>
+          <tr><td><code>option_a</code></td><td>Hard Enamel</td><td>Polyester</td><td>PVC</td></tr>
+          <tr><td><code>option_b</code></td><td>Soft Enamel</td><td>Nylon</td><td>Proximity</td></tr>
+          <tr><td><code>option_c</code></td><td>Printed</td><td>Woven</td><td>Magnetic Strip</td></tr>
+          <tr><td><code>product_use_case</code></td><td>event and award</td><td>conference and security</td><td>staff and member access</td></tr>
+          <tr><td><code>cta_primary_label</code></td><td>Browse Lapel Pins</td><td>Browse Lanyards</td><td>Browse ID Cards</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SECTION 6: ACF FIELD GROUP ── -->
+  <div class="section" id="s6">
+    <div class="section-head-row">
+      <div class="section-num">6</div>
+      <span class="section-eyebrow" style="margin-bottom:0;">Developer Setup</span>
+    </div>
+    <h2 class="section-h2">ACF Field Group: <code>category_page_fields</code></h2>
+    <hr class="section-divider">
+    <p class="section-intro">Create a new ACF Field Group attached to the custom page template <code>template-category-page.php</code>. All fields below must be created exactly as specified — field names are referenced directly in PHP.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Field Label</th><th>Field Name</th><th>Type</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Category Name</td><td><code>category_name</code></td><td>Text</td><td>e.g. "Custom Branded Lanyards"</td></tr>
+          <tr><td>Category Product Term</td><td><code>category_product_term</code></td><td>Text</td><td>e.g. "neck straps and attachments"</td></tr>
+          <tr><td>Option A</td><td><code>option_a</code></td><td>Text</td><td>e.g. "Polyester"</td></tr>
+          <tr><td>Option B</td><td><code>option_b</code></td><td>Text</td><td>e.g. "Nylon"</td></tr>
+          <tr><td>Option C</td><td><code>option_c</code></td><td>Text</td><td>e.g. "Woven"</td></tr>
+          <tr><td>Product Use Case</td><td><code>product_use_case</code></td><td>Text</td><td>e.g. "conference and security"</td></tr>
+          <tr><td>Trust Bar Text</td><td><code>trust_bar_text</code></td><td>Text</td><td>Default: "Trusted by 5,000+ Australian Schools, Clubs, &amp; Government Departments"</td></tr>
+          <tr><td>Primary CTA Label</td><td><code>cta_primary_label</code></td><td>Text</td><td>e.g. "Browse Custom Branded Lanyards"</td></tr>
+          <tr><td>Primary CTA URL</td><td><code>cta_primary_url</code></td><td>URL</td><td>Links to the stock / shop listing page</td></tr>
+          <tr><td>Secondary CTA Label</td><td><code>cta_secondary_label</code></td><td>Text</td><td>Default: "Get a Custom Quote"</td></tr>
+          <tr><td>Secondary CTA URL</td><td><code>cta_secondary_url</code></td><td>URL</td><td>Links to quote / contact form</td></tr>
+          <tr><td>Below-Fold Content</td><td><code>below_fold_content</code></td><td>WYSIWYG</td><td>Min. 300–500 words. FAQs, specs, or material guide. Required — see Thin Content rule.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SECTION 7: DYNAMIC META ── -->
+  <div class="section" id="s7">
+    <div class="section-head-row">
+      <div class="section-num">7</div>
+      <span class="section-eyebrow" style="margin-bottom:0;">SEO Implementation</span>
+    </div>
+    <h2 class="section-h2">Dynamic Meta Tags</h2>
+    <hr class="section-divider">
+    <p class="section-intro">Add to <code>functions.php</code> or use Rank Math custom field variables. Do not use both simultaneously — they will conflict.</p>
+<pre><span class="kw">&lt;?php</span>
+<span class="cm">// Dynamic title tag</span>
+<span class="fn">add_filter</span>(<span class="str">'pre_get_document_title'</span>, <span class="kw">function</span>(<span class="va">$title</span>) {
+    <span class="kw">if</span> (<span class="fn">is_page_template</span>(<span class="str">'template-category-page.php'</span>)) {
+        <span class="va">$category_name</span> = <span class="fn">get_field</span>(<span class="str">'category_name'</span>);
+        <span class="kw">return</span> <span class="va">$category_name</span> . <span class="str">' Australia | Trusted Since 1984'</span>;
+    }
+    <span class="kw">return</span> <span class="va">$title</span>;
+});
+
+<span class="cm">// Dynamic meta description</span>
+<span class="fn">add_action</span>(<span class="str">'wp_head'</span>, <span class="kw">function</span>() {
+    <span class="kw">if</span> (<span class="fn">is_page_template</span>(<span class="str">'template-category-page.php'</span>)) {
+        <span class="va">$category_name</span> = <span class="fn">get_field</span>(<span class="str">'category_name'</span>);
+        <span class="va">$product_term</span>  = <span class="fn">get_field</span>(<span class="str">'category_product_term'</span>);
+        <span class="kw">echo</span> <span class="str">'&lt;meta name="description" content="Shop premium '</span>
+          . <span class="fn">esc_attr</span>(<span class="va">$category_name</span>)
+          . <span class="str">' Australia-wide. Trusted supplier of '</span>
+          . <span class="fn">esc_attr</span>(<span class="va">$product_term</span>)
+          . <span class="str">' since 1984. Fast shipping. Wholesale pricing available."&gt;'</span>;
+    }
+});</pre>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">ℹ️</div>
+      <div><strong>Rank Math Note</strong>If using Rank Math, map ACF fields via Rank Math's custom variable settings to avoid conflicts with the <code>wp_head</code> hook above. Do not use both methods simultaneously.</div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 8: URL STRUCTURE ── -->
+  <div class="section" id="s8">
+    <div class="section-head-row">
+      <div class="section-num">8</div>
+      <span class="section-eyebrow" style="margin-bottom:0;">URL Architecture</span>
+    </div>
+    <h2 class="section-h2">URL Structure</h2>
+    <hr class="section-divider">
+    <p class="section-intro">All category pages must follow this slug pattern. Slugs are set manually by the SEO team — no automation required for this step.</p>
+    <div class="url-example">
+      <span>domain.com.au/[category-slug]-australia/</span>
+    </div>
+    <p class="section-intro">Examples:</p>
+    <div class="url-example">
+      /lanyards-australia/<br>
+      /lapel-pins-australia/<br>
+      /id-cards-australia/
+    </div>
+
+    <div class="callout callout-green">
+      <div class="callout-icon">🔗</div>
+      <div><strong>Canonical note</strong>Ensure each category page has a self-referencing canonical tag. If using Rank Math, this is set automatically. If manual, add <code>&lt;link rel="canonical" href="[full page URL]"&gt;</code> in the page template.</div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 9: THIN CONTENT ── -->
+  <div class="section" id="s9">
+    <div class="section-head-row">
+      <div class="section-num">9</div>
+      <span class="section-eyebrow" style="margin-bottom:0;">Quality Compliance</span>
+    </div>
+    <h2 class="section-h2">Thin Content Rule</h2>
+    <hr class="section-divider">
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div>
+        <strong>Required — add this instruction inside the ACF WYSIWYG field description for <code>below_fold_content</code></strong>
+        "Required. Minimum 300 words. Include FAQs, technical specs, or a material guide specific to this category. Pages without this content will be flagged for review by the SEO team."
+      </div>
+    </div>
+
+    <p class="section-intro" style="margin-top:16px;">This is a <strong>Google Thin Content compliance requirement</strong>. Every programmatic page must have at least 300–500 words of unique, category-specific text below the fold. Templated pages that do not meet this threshold risk being de-prioritised in indexing.</p>
+  </div>
+
+  <!-- ── SECTION 10: SIGN-OFF ── -->
+  <div class="section" id="s10">
+    <div class="section-head-row">
+      <div class="section-num">10</div>
+      <span class="section-eyebrow" style="margin-bottom:0;">Deployment</span>
+    </div>
+    <h2 class="section-h2">Sign-off &amp; Deployment Checklist</h2>
+    <hr class="section-divider">
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div><strong>Ping the SEO Manager before going live on any page.</strong> Meta tag logic and slug format must be signed off before deployment. Do not publish directly.</div>
+    </div>
+
+    <div class="table-wrap" style="margin-top:20px;">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Checklist Item</th><th>Owner</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>ACF Field Group <code>category_page_fields</code> created and attached to template</td><td>Developer</td></tr>
+          <tr><td>2</td><td>All ACF fields populated for the category page being launched</td><td>SEO Team</td></tr>
+          <tr><td>3</td><td>Dynamic title and meta description verified in browser source</td><td>Developer</td></tr>
+          <tr><td>4</td><td>URL slug follows <code>[category]-australia/</code> pattern</td><td>SEO Team</td></tr>
+          <tr><td>5</td><td>Canonical tag present and pointing to itself</td><td>Developer</td></tr>
+          <tr><td>6</td><td><code>below_fold_content</code> populated with min. 300 words unique content</td><td>SEO Team</td></tr>
+          <tr><td>7</td><td>Page reviewed in Google Rich Results Test if structured data is included</td><td>SEO Team</td></tr>
+          <tr><td>8</td><td>SEO Manager sign-off received</td><td>SEO Manager</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <span>Badge-A-Minit — Programmatic SEO · Developer Hand-off Note · Girish Kumar | SEO Manager · April 2026</span>
+  <span>Stack: <strong style="color:white;">WordPress + ACF</strong> · Scope: badge-a-minit.com.au</span>
+</div>
+
+</body>
+</html>
