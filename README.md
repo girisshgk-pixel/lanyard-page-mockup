@@ -11,6 +11,7 @@
 |------|-----|
 | Product Page Mockup | [girisshgk-pixel.github.io/lanyard-page-mockup/](https://girisshgk-pixel.github.io/lanyard-page-mockup/) |
 | Developer Implementation Notes | [girisshgk-pixel.github.io/lanyard-page-mockup/dev-notes.html](https://girisshgk-pixel.github.io/lanyard-page-mockup/dev-notes.html) |
+| Category On-Page Programmatic Content | [girisshgk-pixel.github.io/lanyard-page-mockup/dev-handoff-note-1.html](https://girisshgk-pixel.github.io/lanyard-page-mockup/dev-handoff-note-1.html) |
 
 ---
 
@@ -24,8 +25,8 @@ targeting all product pages listed under `/products/lanyards`.
 The work covers page layout, image gallery UX, structured data, on-page SEO, mobile-first responsiveness,
 and a full developer notes document that justifies every proposed change with before/after code diffs.
 
-**Prepared by:** Girish Kumar — E-Commerce SEO Manager
-**Brand:** Badge-A-Minit (badge-a-minit.com.au)
+**Prepared by:** Girish Kumar — E-Commerce SEO Manager, AdsPilot
+**Client:** Badge-A-Minit (badge-a-minit.com.au)
 **Date:** April 2026
 **Scope:** `/products/lanyards` — product pages only
 
@@ -35,9 +36,10 @@ and a full developer notes document that justifies every proposed change with be
 
 ```
 /
-├── index.html          ← Product page mockup (full proposed design)
-├── dev-notes.html      ← Developer implementation notes (14 sections, 24 changes)
-└── README.md           ← This file
+├── index.html               ← Product page mockup (full proposed design)
+├── dev-notes.html           ← Developer implementation notes (14 sections, 24 changes)
+├── dev-handoff-note-1.html  ← Programmatic category page template — developer hand-off (WordPress + ACF)
+└── README.md                ← This file
 ```
 
 ---
@@ -149,6 +151,33 @@ each presented as a two-column card: justification notes on the left, before/aft
 
 ---
 
+
+---
+
+## 📄 Category On-Page Programmatic Content — Developer Hand-off
+
+The `dev-handoff-note-1.html` file is a developer hand-off document for implementing a **reusable programmatic category page template** on badge-a-minit.com.au using WordPress + ACF (Advanced Custom Fields).
+
+**Stack:** WordPress + ACF (Advanced Custom Fields)
+**Status:** Ready for Implementation
+
+### What it covers
+
+| # | Section | Purpose |
+|---|---------|---------|
+| 1 | H1 + Lead Paragraph | Programmatic H1 and lead copy driven by `category_name` ACF field |
+| 2 | Trust Bar | Social proof line — pre-filled default, SEO-team editable |
+| 3 | Benefit Bullets | 4 adaptive bullets using `option_a/b/c` and `product_use_case` |
+| 4 | Primary & Secondary CTAs | Two intent-mapped CTAs with ACF-controlled labels and URLs |
+| 5 | Variable Map | Reference table for SEO team — Lapel Pins, Lanyards, ID Cards examples |
+| 6 | ACF Field Group | Full field list for `category_page_fields` group attached to template |
+| 7 | Dynamic Meta Tags | `functions.php` hooks for title and meta description — Rank Math compatible |
+| 8 | URL Structure | Slug pattern: `[category]-australia/` — manually set by SEO team |
+| 9 | Thin Content Rule | Google compliance requirement — min. 300 words below fold |
+| 10 | Sign-off Checklist | 8-point deployment checklist — developer + SEO team + manager sign-off |
+
+The document is linked directly from the product page breadcrumb bar — next to the Developer Notes link — and styled in the same Badge-A-Minit green theme.
+
 ## ⚙️ Pending Items Before Production
 
 The following require data from live Badge-A-Minit pages before the structured data can be finalised:
@@ -202,7 +231,8 @@ FAQ accordion toggles `aria-expanded`. Colour swatches use `role="radio"` + `ari
 ## 📞 Contact
 
 **Girish Kumar** — E-Commerce SEO Manager
-**Brand:** Badge-A-Minit · 56a Prospect Road, Prospect SA 5082 · (08) 8363 1655
+**Agency:** AdsPilot
+**Client:** Badge-A-Minit · 56a Prospect Road, Prospect SA 5082 · (08) 8363 1655
 
 ---
 
